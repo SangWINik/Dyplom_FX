@@ -1,17 +1,25 @@
 package com.muzach.ui.pianoroll;
 
 import com.muzach.midi.note.NoteDuration;
+import com.muzach.midi.note.NoteLocation;
 import com.muzach.music.Note;
+import com.muzach.music.NotePitch;
 import com.muzach.music.TimeSignature;
 import com.muzach.music.Track;
 import javafx.beans.NamedArg;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import javafx.scene.text.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +38,9 @@ public class PianorollPane extends Pane {
 
     private Map<Note, Rectangle> noteRectangleMap;
     private Note selectedNote = null;
+
+    private int xInitPos = 0;
+    private int xOffset = 0;
 
     public PianorollPane(Track track, TimeSignature timeSignature, @NamedArg(value = "octaveCount", defaultValue = "3") int octaveCount, @NamedArg(value = "laneHeight", defaultValue = "4") int laneHeight){
         this.octaveCount = octaveCount;
@@ -104,7 +115,7 @@ public class PianorollPane extends Pane {
     private void drawNotes(){
         for (Note note: track.getNotes()){
             int x = note.getLocation().getTSPosition()*tsWidth;
-            int y = (noteCount - note.getPitch().ordinal())*laneHeight;
+            int y = (noteCount - note.getPitch().ordinal())*laneHeight - laneHeight;
             int width = NoteDuration.getTsCount(note.getDuration())*tsWidth;
             Rectangle rectangle = new Rectangle(x, y, width, laneHeight);
             if (note == selectedNote){
@@ -118,6 +129,7 @@ public class PianorollPane extends Pane {
             rectangle.setFill(color);
             this.getChildren().add(rectangle);
             noteRectangleMap.put(note, rectangle);
+            addDragDetection(rectangle);
         }
     }
 
@@ -146,6 +158,55 @@ public class PianorollPane extends Pane {
         if (y < rectangle.getY() || y > rectangle.getY() + rectangle.getHeight())
             return false;
         return true;
+    }
+
+    private void addDragDetection(Rectangle rectangle) {
+        rectangle.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                xInitPos = (int)event.getX();
+                event.setDragDetect(true);
+            }
+        });
+        rectangle.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                //xOffset = (int)(event.getX() - xInitPos);
+                event.setDragDetect(false);
+                recalculateNoteLocation(selectedNote, event.getX(), event.getY());
+                reDraw();
+                //xOffset = 0;
+            }
+        });
+        rectangle.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                System.out.print("done");
+            }
+        });
+    }
+
+    private void recalculateNoteLocation(Note note, double x, double y){
+        //calculating pitch
+        int pitchOrdinal = (int)(noteCount - y/laneHeight);
+        if  (pitchOrdinal >= 0 && pitchOrdinal < noteCount){
+            NotePitch newPitch = NotePitch.values()[pitchOrdinal];
+            if (note.getPitch() != newPitch){
+                System.out.println(newPitch);
+                note.setPitch(newPitch);
+            }
+        }
+        //calculation location
+        int tsNotesInMeasure = timeSignature.numinator*8;
+        ScrollPane scrollPane = (ScrollPane)getScene().lookup("#pianorollScrollPane");
+        double hValue = scrollPane.getHvalue();
+        int ticksPerMeasure = tsNotesInMeasure/NoteDuration.getTsCount(resolution);
+        int resLocation = (int)(x/(tsWidth*NoteDuration.getTsCount(resolution)));
+//        int resLocation = (int)((noteRectangleMap.get(note).getX() + xOffset)/(tsWidth*NoteDuration.getTsCount(resolution)));
+        int measureNum = resLocation/ticksPerMeasure + 1;
+        int beatInMeasure = resLocation - (measureNum - 1)*ticksPerMeasure;
+        note.setLocation(NoteLocation.getNoteLocation(measureNum, beatInMeasure, resolution));
+        //note.setLocation();
     }
 
     public NoteDuration.Duration getResolution() {

@@ -44,6 +44,6 @@ public class NoteLocation {
     }
 
     public int getTSPosition() {
-        return (getTick()/SequenceBuilder.TICKS_PER_QUARTER_NOTE)*NoteDuration.getTsCount(NoteDuration.Duration.QUARTER);
+        return getTick()/(SequenceBuilder.TICKS_PER_QUARTER_NOTE/8) - 4;
     }
 }
