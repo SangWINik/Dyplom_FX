@@ -1,23 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            prefHeight="500.0" prefWidth="600.0">
+<AnchorPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1"
+            xmlns:fx="http://javafx.com/fxml/1">
     <VBox>
+        <HBox alignment="CENTER_LEFT" spacing="5">
+            <padding>
+                <Insets bottom="5" left="5" right="5" top="5"/>
+            </padding>
+            <Button fx:id="editModeButton">
+                <graphic>
+                    <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../resources/pointer.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="addModeButton">
+                <graphic>
+                    <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../resources/draw.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <HBox fx:id="toolsHBox" disable="true" alignment="CENTER_LEFT">
+                <Button fx:id="deleteModeButton">
+                    <graphic>
+                        <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../resources/delete.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Label text="Value:">
+                    <HBox.margin>
+                        <Insets left="10.0"/>
+                    </HBox.margin>
+                </Label>
+                <ComboBox fx:id="valueComboBox"/>
+                <Label text="Velocity:">
+                    <HBox.margin>
+                        <Insets left="10.0"/>
+                    </HBox.margin>
+                </Label>
+                <Slider fx:id="velocitySlider" max="127.0"/>
+            </HBox>
+        </HBox>
         <HBox fx:id="pianorollHbox">
-            <ScrollPane prefWidth="600" vbarPolicy="NEVER" fx:id="pianorollScrollPane">
+            <padding>
+                <Insets left="5.0" right="5.0"/>
+            </padding>
+            <ScrollPane fx:id="pianorollScrollPane" prefWidth="600" vbarPolicy="NEVER">
 
             </ScrollPane>
         </HBox>
-        <HBox alignment="CENTER_RIGHT">
-            <ComboBox fx:id="gridComboBox"></ComboBox>
-            <Button fx:id="okButton">OK</Button>
+        <HBox alignment="CENTER_RIGHT" spacing="10">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="10"/>
+            </padding>
+            <Label text="Grid:"/>
+            <ComboBox fx:id="gridComboBox"/>
+            <Button fx:id="okButton" prefWidth="100">OK</Button>
         </HBox>
     </VBox>
 

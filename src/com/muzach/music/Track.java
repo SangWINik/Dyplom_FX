@@ -14,10 +14,10 @@ public class Track {
     }
 
     public List<List<Note>> getMeasures() {
-        int measureCount = notes.stream().max(Comparator.comparingInt(n -> n.getLocation().getMeasureNumber())).get().getLocation().getMeasureNumber();
+        int measureCount = notes.stream().max(Comparator.comparingInt(n -> n.getLocation().getMeasureNumber())).get().getLocation().getMeasureNumber() + 1;
         List<Note>[] measures = new List[measureCount];
         for (Note n : notes) {
-            int measure = n.getLocation().getMeasureNumber() - 1;
+            int measure = n.getLocation().getMeasureNumber();
             if (measures[measure] == null){
                 measures[measure] = new ArrayList<>();
             }

@@ -3,53 +3,63 @@ package com.muzach.midi;
 import com.muzach.midi.note.NoteDuration;
 import com.muzach.midi.note.NoteLocation;
 import com.muzach.music.Note;
+import com.muzach.music.TimeSignature;
 
 import javax.sound.midi.*;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 public class SequenceBuilder {
     //todo make a property file for these
     public static final int TICKS_PER_QUARTER_NOTE = 24;
 
     private Sequence sequence;
-    private Track track;
-    //int eighth notes
-    private int measureLength;
+    private Track melodyTrack;
+    private Track harmonyTrack;
 
-    public SequenceBuilder(int measureLength) throws InvalidMidiDataException {
-        this.measureLength = measureLength;
+    public SequenceBuilder(TimeSignature timeSignature) throws InvalidMidiDataException {
         sequence = new Sequence(Sequence.PPQ, TICKS_PER_QUARTER_NOTE);
-        track = sequence.createTrack();
+        melodyTrack = sequence.createTrack();
+        harmonyTrack = sequence.createTrack();
+        setTimeSignature(timeSignature);
     }
 
     public Sequence getSequence() {
         return this.sequence;
     }
 
-    public void setTimeSignature(byte numinator, byte denominator) throws InvalidMidiDataException {
+    public void setTimeSignature(TimeSignature timeSignature) throws InvalidMidiDataException {
         MetaMessage mm = new MetaMessage();
-        byte[] tsBytes = new byte[]{numinator, denominator, 24, 8};
+        byte[] tsBytes = new byte[]{(byte)timeSignature.numinator, (byte)timeSignature.denominator, 24, 8};
         mm.setMessage(0x58, tsBytes, 4);
         MidiEvent me = new MidiEvent(mm, 0);
-        track.add(me);
+        melodyTrack.add(me);
+        harmonyTrack.add(me);
     }
 
-    public void setNote(Note note) throws Exception{
+    public void setMelodyTrack(com.muzach.music.Track track) {
+        for (Note note: track.getNotes()){
+            setNote(melodyTrack, note);
+        }
+    }
+
+    private void setNote(Track track, Note note) {
         ShortMessage sm;
         MidiEvent me;
 
-        //note on
-        sm = new ShortMessage();
-        sm.setMessage(0x90, note.getPitch().getMidiNote(), note.getVelocity());
-        me = new MidiEvent(sm, note.getLocation().getTick());
-        track.add(me);
+        try {
+            //note on
+            sm = new ShortMessage();
+            sm.setMessage(0x90, note.getPitch().getMidiNote(), note.getVelocity());
+            me = new MidiEvent(sm, note.getLocation().getTick());
+            track.add(me);
 
-        //note off
-        sm = new ShortMessage();
-        sm.setMessage(0x80, note.getPitch().getMidiNote(), note.getVelocity());
-        me = new MidiEvent(sm, note.getLocation().getTick() + NoteDuration.getTickCount(note.getDuration()));
-        track.add(me);
+            //note off
+            sm = new ShortMessage();
+            sm.setMessage(0x80, note.getPitch().getMidiNote(), note.getVelocity());
+            me = new MidiEvent(sm, note.getLocation().getTick() + NoteDuration.getTickCount(note.getDuration()));
+            track.add(me);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void setNote(NoteLocation noteLocation, int pitch, NoteDuration.Duration duration, int velocity) throws InvalidMidiDataException {
@@ -60,13 +70,13 @@ public class SequenceBuilder {
         sm = new ShortMessage();
         sm.setMessage(0x90, pitch, velocity);
         me = new MidiEvent(sm, noteLocation.getTick());
-        track.add(me);
+        melodyTrack.add(me);
 
         //note off
         sm = new ShortMessage();
         sm.setMessage(0x80, pitch, velocity);
         me = new MidiEvent(sm, noteLocation.getTick() + NoteDuration.getTickCount(duration));
-        track.add(me);
+        melodyTrack.add(me);
     }
 }
 

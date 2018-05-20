@@ -6,16 +6,15 @@ public class NoteLocation {
     private static int measureLength = 4;
 
     private int measureNumber;
-    private int beatsInMeasure;
-    private NoteDuration.Duration resolution;
+    private int tsPosition;
 
-    private NoteLocation(){}
+    private NoteLocation() {
+    }
 
     public static NoteLocation getNoteLocation(int measureNumber, int beatsInMeasure, NoteDuration.Duration resolution) {
         NoteLocation nl = new NoteLocation();
-        nl.measureNumber = measureNumber;
-        nl.beatsInMeasure = beatsInMeasure;
-        nl.resolution = resolution;
+        nl.tsPosition = (beatsInMeasure - 1) * NoteDuration.getTsCount(resolution);
+        nl.measureNumber = measureNumber - 1;
         return nl;
     }
 
@@ -27,23 +26,15 @@ public class NoteLocation {
         return measureNumber;
     }
 
-    public int getBeatsInMeasure() {
-        return beatsInMeasure;
-    }
-
     public int getMeasureLength() {
         return measureLength;
     }
 
-    public NoteDuration.Duration getResolution() {
-        return resolution;
-    }
-
     public int getTick() {
-        return 1 + ((measureNumber - 1) * SequenceBuilder.TICKS_PER_QUARTER_NOTE * measureLength) + (beatsInMeasure * NoteDuration.getTickCount(resolution));
+        return 1 + (measureNumber * SequenceBuilder.TICKS_PER_QUARTER_NOTE * measureLength) + tsPosition * SequenceBuilder.TICKS_PER_QUARTER_NOTE / 8;
     }
 
     public int getTSPosition() {
-        return getTick()/(SequenceBuilder.TICKS_PER_QUARTER_NOTE/8) - 4;
+        return measureNumber*measureLength*NoteDuration.getTsCount(NoteDuration.Duration.QUARTER) + this.tsPosition;
     }
 }
