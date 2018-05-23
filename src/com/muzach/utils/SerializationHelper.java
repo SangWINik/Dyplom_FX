@@ -1,15 +1,13 @@
 package com.muzach.utils;
 
+import com.muzach.Main;
 import com.muzach.generation.Preset;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.List;
 
 public class SerializationHelper {
-    private static final String path = "/mypresets.pst";
+    private static final String path = "./mypresets.mzk";
 
     public static void serializeMyPresets(List<Preset> myPresets) {
         try {

@@ -41,6 +41,12 @@ public class SequenceBuilder {
         }
     }
 
+    public void setHarmonyTrack(com.muzach.music.Track track) {
+        for (Note note: track.getNotes()){
+            setNote(harmonyTrack, note);
+        }
+    }
+
     private void setNote(Track track, Note note) {
         ShortMessage sm;
         MidiEvent me;
@@ -62,21 +68,12 @@ public class SequenceBuilder {
         }
     }
 
-    public void setNote(NoteLocation noteLocation, int pitch, NoteDuration.Duration duration, int velocity) throws InvalidMidiDataException {
-        ShortMessage sm;
-        MidiEvent me;
-
-        //note on
-        sm = new ShortMessage();
-        sm.setMessage(0x90, pitch, velocity);
-        me = new MidiEvent(sm, noteLocation.getTick());
+    public void setInstrument(int instrument) throws Exception{
+        ShortMessage sm = new ShortMessage();
+        sm.setMessage(0xC0, instrument, 0x00);
+        MidiEvent me = new MidiEvent(sm, 0);
         melodyTrack.add(me);
-
-        //note off
-        sm = new ShortMessage();
-        sm.setMessage(0x80, pitch, velocity);
-        me = new MidiEvent(sm, noteLocation.getTick() + NoteDuration.getTickCount(duration));
-        melodyTrack.add(me);
+        harmonyTrack.add(me);
     }
 }
 

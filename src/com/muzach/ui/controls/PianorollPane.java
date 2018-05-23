@@ -1,4 +1,4 @@
-package com.muzach.ui.pianoroll;
+package com.muzach.ui.controls;
 
 import com.muzach.midi.note.NoteDuration;
 import com.muzach.midi.note.NoteLocation;
@@ -7,10 +7,8 @@ import com.muzach.music.NotePitch;
 import com.muzach.music.TimeSignature;
 import com.muzach.music.Track;
 import javafx.beans.NamedArg;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
@@ -22,7 +20,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
-import javafx.scene.text.Text;
 
 import java.util.HashMap;
 import java.util.Map;

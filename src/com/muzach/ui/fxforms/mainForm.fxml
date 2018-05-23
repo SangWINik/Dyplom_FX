@@ -11,20 +11,14 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/9.0.1"
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<AnchorPane prefWidth="800.0" xmlns="http://javafx.com/javafx/9.0.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.muzach.ui.controllers.MainForm">
     <VBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <children>
             <TabPane prefHeight="350" tabClosingPolicy="UNAVAILABLE">
                 <tabs>
-                    <Tab text="My Presets">
-                        <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0">
-                                <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-                            </AnchorPane>
-                        </content>
-                    </Tab>
                     <Tab text="Presets">
                         <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0">
@@ -33,43 +27,54 @@
                             </AnchorPane>
                         </content>
                     </Tab>
+                    <Tab text="My Presets">
+                        <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0">
+                                <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <VBox fx:id="myPresetsVBox" spacing="10">
+                                        <padding><Insets left="10" top="10"></Insets></padding>
+                                    </VBox>
+                                </ScrollPane>
+                            </AnchorPane>
+                        </content>
+                    </Tab>
                     <Tab text="Advanced Settings">
                         <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0">
                                 <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                             AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                    <VBox spacing="10" AnchorPane.topAnchor="0.0">
-                                        <padding>
-                                            <Insets left="20" top="10"/>
-                                        </padding>
-                                        <VBox spacing="5.0">
-                                            <children>
-                                                <Label text="Time Signature:"/>
-                                                <ComboBox fx:id="timeSignatureComboBox"/>
-                                            </children>
-                                        </VBox>
-                                        <VBox spacing="5.0">
-                                            <children>
-                                                <Label text="Scale:"/>
-                                                <ComboBox/>
-                                            </children>
-                                        </VBox>
-                                        <VBox>
-                                            <children>
-                                                <Button fx:id="savePresetButton" onAction="#savePreset" text="Save Preset">
-                                                    <VBox.margin>
-                                                        <Insets top="10.0"/>
-                                                    </VBox.margin>
-                                                </Button>
-                                            </children>
-                                        </VBox>
-                                    </VBox>
+                                    <GridPane hgap="5" vgap="15">
+                                        <padding><Insets left="20" top="20" bottom="20" right="20"/></padding>
+                                        <children>
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Time Signature:"/>
+                                            <ComboBox GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="timeSignatureComboBox"/>
+
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Scale:"/>
+                                            <ComboBox GridPane.columnIndex="1" GridPane.rowIndex="1"></ComboBox>
+
+                                            <Button GridPane.columnIndex="0" GridPane.rowIndex="2" fx:id="savePresetButton" onAction="#savePreset" text="Save Preset">
+                                                <VBox.margin>
+                                                    <Insets top="10.0"/>
+                                                </VBox.margin>
+                                            </Button>
+                                        </children>
+                                        <columnConstraints>
+                                            <ColumnConstraints prefWidth="125"></ColumnConstraints>
+                                            <ColumnConstraints prefWidth="200"></ColumnConstraints>
+                                        </columnConstraints>
+                                    </GridPane>
                                 </ScrollPane>
                             </AnchorPane>
                         </content>
                     </Tab>
                 </tabs>
             </TabPane>
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <padding><Insets top="10" bottom="10"/></padding>
+                <Button fx:id="saveMidiButton" onAction="#saveMidi">Save MIDI</Button>
+                <Button fx:id="generateButton">Generate</Button>
+            </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                 <children>
                     <Button fx:id="demoPlayButton" onAction="#playDemo">Demo</Button>

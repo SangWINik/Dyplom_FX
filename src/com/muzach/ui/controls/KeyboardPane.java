@@ -1,4 +1,4 @@
-package com.muzach.ui.pianoroll;
+package com.muzach.ui.controls;
 
 import javafx.beans.NamedArg;
 import javafx.scene.layout.Pane;
