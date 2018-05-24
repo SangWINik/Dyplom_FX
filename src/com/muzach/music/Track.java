@@ -9,6 +9,8 @@ public class Track {
     private List<Note> notes;
     private int instrument;
 
+    private boolean isMuted = false;
+
     public Track(){
         notes = new ArrayList<>();
     }
@@ -24,6 +26,18 @@ public class Track {
             measures[measure].add(n);
         }
         return Arrays.asList(measures);
+    }
+
+    public boolean isMuted() {
+        return isMuted;
+    }
+
+    public void mute(){
+        this.isMuted = true;
+    }
+
+    public void unmute(){
+        this.isMuted = false;
     }
 
     public void addNote(Note note) {

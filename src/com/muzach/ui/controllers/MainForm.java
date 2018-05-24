@@ -7,6 +7,7 @@ import com.muzach.midi.note.NoteDuration;
 import com.muzach.midi.note.NoteLocation;
 import com.muzach.music.*;
 import com.muzach.ui.controls.PresetPane;
+import com.muzach.ui.controls.TracksPlayerPane;
 import com.muzach.ui.windows.MidiEditorWindow;
 import com.muzach.ui.windows.SavePresetDialog;
 import com.muzach.utils.SerializationHelper;
@@ -20,6 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -45,10 +47,13 @@ public class MainForm {
     private Button savePresetButton;
     @FXML
     private VBox myPresetsVBox;
+    @FXML
+    private HBox playerHBox;
 
     private Composition composition;
     private List<Preset> myPresets;
     private List<PresetPane> presetPanes;
+    private Sequencer sequencer;
 
     public MainForm(){
         TimeSignature timeSignature = new TimeSignature(6, 4);
@@ -91,6 +96,9 @@ public class MainForm {
     public void initialize(){
         initAdvancedSettings();
         initMyPresets();
+
+        TracksPlayerPane tracksPlayerPane = new TracksPlayerPane(composition, sequencer);
+        playerHBox.getChildren().addAll(tracksPlayerPane);
     }
 
     public void openEditor() {
@@ -100,11 +108,7 @@ public class MainForm {
 
     public void playDemo() {
         try {
-            SequenceBuilder sequenceBuilder = new SequenceBuilder(composition.getTimeSignature());
-            sequenceBuilder.setMelodyTrack(composition.getMelodyTrack());
-            sequenceBuilder.setHarmonyTrack(composition.getHarmonyTrack());
-            sequenceBuilder.setInstrument(57);
-            Player.playSequence(sequenceBuilder.getSequence(), composition.getTempoBMP());
+            sequencer = Player.playComposition(composition);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -179,13 +183,15 @@ public class MainForm {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("MIDI file(*.mid)", "*.mid"));
         fileChooser.setInitialFileName("moose");
         File file = fileChooser.showSaveDialog(stage);
-        try {
-            SequenceBuilder sequenceBuilder = new SequenceBuilder(composition.getTimeSignature());
-            sequenceBuilder.setMelodyTrack(composition.getMelodyTrack());
-            sequenceBuilder.setHarmonyTrack(composition.getHarmonyTrack());
-            MidiSystem.write(sequenceBuilder.getSequence(), 1, file);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        if (file != null) {
+            try {
+                SequenceBuilder sequenceBuilder = new SequenceBuilder(composition.getTimeSignature());
+                sequenceBuilder.setMelodyTrack(composition.getMelodyTrack());
+                sequenceBuilder.setHarmonyTrack(composition.getHarmonyTrack());
+                MidiSystem.write(sequenceBuilder.getSequence(), 1, file);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

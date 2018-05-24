@@ -13,6 +13,8 @@
 
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import com.muzach.ui.controls.TrackPane?>
+<?import com.muzach.ui.controls.TracksPlayerPane?>
 <AnchorPane prefWidth="800.0" xmlns="http://javafx.com/javafx/9.0.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.muzach.ui.controllers.MainForm">
     <VBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -74,6 +76,8 @@
                 <padding><Insets top="10" bottom="10"/></padding>
                 <Button fx:id="saveMidiButton" onAction="#saveMidi">Save MIDI</Button>
                 <Button fx:id="generateButton">Generate</Button>
+            </HBox>
+            <HBox fx:id="playerHBox">
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                 <children>
