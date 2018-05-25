@@ -1,5 +1,6 @@
 package com.muzach.ui.controls;
 
+import com.muzach.midi.Player;
 import com.muzach.music.Composition;
 import com.muzach.ui.windows.MidiEditorWindow;
 import javafx.geometry.Insets;
@@ -21,18 +22,22 @@ public class TracksPlayerPane extends Pane {
     private Sequencer sequencer;
     private int markerPosition = 0;
 
+    private Line marker;
+
     public TracksPlayerPane(Composition composition, Sequencer sequencer){
         this.composition = composition;
         this.sequencer = sequencer;
+        this.setPrefWidth(780);
+        this.marker = new Line();
         this.reDraw();
     }
 
     public void reDraw(){
-        //this.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
-        this.setPrefWidth(780);
+        this.getChildren().clear();
 
-        TrackPane melodyTrackPane = new TrackPane(composition.getMelodyTrack(), composition.getTimeSignature());
-        melodyTrackPane.setPrefSize(getPrefWidth() - buttonWidth - horizontalSpacing, trackHeight);
+        double trackWidth = getPrefWidth() - buttonWidth - horizontalSpacing;
+
+        TrackPane melodyTrackPane = new TrackPane(composition.getMelodyTrack(), composition.getTimeSignature(), composition.getMeasureCount(), "Melody", trackWidth, trackHeight);
         Button editMelodyButton = new Button("Edit");
         editMelodyButton.setPrefWidth(buttonWidth);
         Button muteMelodyButton = new Button("Mute");
@@ -41,15 +46,15 @@ public class TracksPlayerPane extends Pane {
         melodyButtonsVBox.setAlignment(Pos.TOP_LEFT);
         HBox melodyTrackHBox = new HBox(horizontalSpacing, melodyTrackPane, melodyButtonsVBox);
         muteMelodyButton.setOnAction(event -> {
-            onMuteClick(melodyTrackPane, muteMelodyButton);
+            onMuteClick(melodyTrackPane, muteMelodyButton, true);
         });
         editMelodyButton.setOnAction(event -> {
-            MidiEditorWindow midiEditor = new MidiEditorWindow(composition.getMelodyTrack(), composition.getTimeSignature());
+            MidiEditorWindow midiEditor = new MidiEditorWindow(composition.getMelodyTrack(), composition.getTimeSignature(), composition.getMeasureCount());
             midiEditor.showModal();
+            reDraw();
         });
 
-        TrackPane harmonyTrackPane = new TrackPane(composition.getHarmonyTrack(), composition.getTimeSignature());
-        harmonyTrackPane.setPrefSize(getPrefWidth() - buttonWidth - horizontalSpacing, trackHeight);
+        TrackPane harmonyTrackPane = new TrackPane(composition.getHarmonyTrack(), composition.getTimeSignature(), composition.getMeasureCount(), "Harmony", trackWidth, trackHeight);
         Button editHarmonyButton = new Button("Edit");
         editHarmonyButton.setPrefWidth(buttonWidth);
         Button muteHarmonyButton = new Button("Mute");
@@ -58,17 +63,21 @@ public class TracksPlayerPane extends Pane {
         harmonyButtonsVBox.setAlignment(Pos.TOP_LEFT);
         HBox harmonyTrackHBox = new HBox(horizontalSpacing, harmonyTrackPane, harmonyButtonsVBox);
         muteHarmonyButton.setOnAction(event -> {
-            onMuteClick(harmonyTrackPane, muteHarmonyButton);
+            onMuteClick(harmonyTrackPane, muteHarmonyButton, false);
         });
         editHarmonyButton.setOnAction(event -> {
-            MidiEditorWindow midiEditor = new MidiEditorWindow(composition.getHarmonyTrack(), composition.getTimeSignature());
+            MidiEditorWindow midiEditor = new MidiEditorWindow(composition.getHarmonyTrack(), composition.getTimeSignature(), composition.getMeasureCount());
             midiEditor.showModal();
+            reDraw();
         });
 
         VBox tracksVBox = new VBox(verticalSpacing, melodyTrackHBox, harmonyTrackHBox);
         tracksVBox.setPadding(new Insets(padding, 0, 0, 0));
 
-        Line marker = new Line(markerPosition, 0, markerPosition, trackHeight*2 + verticalSpacing + padding);
+        /*long tickCount = Player.getSequencer().getTickLength();
+        double markerTickRate = tickCount!=0?trackWidth/tickCount:0;
+        marker = new Line(markerPosition*markerTickRate, 0, markerPosition*markerTickRate, trackHeight*2 + verticalSpacing + padding);*/
+        marker = new Line(0, 0, 0, trackHeight*2 + verticalSpacing + padding);
         this.getChildren().addAll(tracksVBox, marker);
     }
 
@@ -76,19 +85,32 @@ public class TracksPlayerPane extends Pane {
         return markerPosition;
     }
 
-    public void onMuteClick(TrackPane trackPane, Button muteButton) {
+    public void setMarkerPosition(int markerPosition) {
+        if (markerPosition != this.markerPosition) {
+            this.markerPosition = markerPosition;
+            double trackWidth = getPrefWidth() - buttonWidth - horizontalSpacing;
+            long tickCount = Player.getSequencer().getTickLength();
+            double markerTickRate = tickCount!=0?trackWidth/tickCount:0;
+            marker.setStartX(markerPosition*markerTickRate);
+            marker.setEndX(markerPosition*markerTickRate);
+        }
+    }
+
+    private void onMuteClick(TrackPane trackPane, Button muteButton, boolean isMelody) {
         trackPane.mute();
         muteButton.setText("Unmute");
+        Player.getSequencer().setTrackMute(isMelody?0:1, true);
         muteButton.setOnAction(event -> {
-            onUnmuteClick(trackPane, muteButton);
+            onUnmuteClick(trackPane, muteButton, isMelody);
         });
     }
 
-    public void onUnmuteClick(TrackPane trackPane, Button muteButton) {
+    private void onUnmuteClick(TrackPane trackPane, Button muteButton, boolean isMelody) {
         trackPane.unmute();
         muteButton.setText("Mute");
+        Player.getSequencer().setTrackMute(isMelody?0:1, false);
         muteButton.setOnAction(event -> {
-            onMuteClick(trackPane, muteButton);
+            onMuteClick(trackPane, muteButton, isMelody);
         });
     }
 }

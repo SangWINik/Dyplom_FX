@@ -21,6 +21,7 @@ public class MidiEditor {
     private static final int octaveCount = 3;
     private static final int laneHeight = 12;
 
+    private int measureCount;
     private Track track;
     private TimeSignature timeSignature;
 
@@ -45,14 +46,15 @@ public class MidiEditor {
     @FXML
     private HBox toolsHBox;
 
-    public MidiEditor(Track track, TimeSignature timeSignature){
+    public MidiEditor(Track track, TimeSignature timeSignature, int measureCount){
         this.track = track;
         this.timeSignature = timeSignature;
+        this.measureCount = measureCount;
     }
 
     public void initialize() {
         KeyboardPane keyboardPane = new KeyboardPane(octaveCount, laneHeight);
-        PianorollPane pianorollPane = new PianorollPane(track, timeSignature, octaveCount, laneHeight, toolsHBox, valueComboBox, velocitySlider);
+        PianorollPane pianorollPane = new PianorollPane(track, timeSignature, measureCount, octaveCount, laneHeight, toolsHBox, valueComboBox, velocitySlider);
         pianorollHbox.getChildren().add(0, keyboardPane);
         pianorollScrollPane.setContent(pianorollPane);
         pianorollScrollPane.setPrefHeight(octaveCount*12*laneHeight + 17); //17 - scrollbar size

@@ -11,15 +11,16 @@ import com.muzach.ui.controls.TracksPlayerPane;
 import com.muzach.ui.windows.MidiEditorWindow;
 import com.muzach.ui.windows.SavePresetDialog;
 import com.muzach.utils.SerializationHelper;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -38,9 +39,14 @@ import java.util.List;
 public class MainForm {
 
     public Button editorButton;
-    public Button demoPlayButton;
-
     private Stage stage;
+
+    @FXML
+    private Button playButton;
+    @FXML
+    private Button pauseButton;
+    @FXML
+    private Button stopButton;
     @FXML
     private ComboBox timeSignatureComboBox;
     @FXML
@@ -49,6 +55,11 @@ public class MainForm {
     private VBox myPresetsVBox;
     @FXML
     private HBox playerHBox;
+    @FXML
+    private Spinner tempoSpinner;
+    @FXML
+    private CheckBox repeatCheckBox;
+    private TracksPlayerPane tracksPlayerPane;
 
     private Composition composition;
     private List<Preset> myPresets;
@@ -61,7 +72,7 @@ public class MainForm {
 
         Track melodyTrack = new Track();
         for (int i = 0; i < 4; i++) {
-            melodyTrack.addNote(new Note(NotePitch.C1, NoteDuration.Duration.QUARTER, NoteLocation.getNoteLocation(i + 1, 1, NoteDuration.Duration.EIGHTH), 96));
+            melodyTrack.addNote(new Note(NotePitch.C2, NoteDuration.Duration.QUARTER, NoteLocation.getNoteLocation(i + 1, 1, NoteDuration.Duration.EIGHTH), 96));
             melodyTrack.addNote(new Note(NotePitch.Ds1, NoteDuration.Duration.QUARTER, NoteLocation.getNoteLocation(i + 1, 4, NoteDuration.Duration.EIGHTH), 30));
             melodyTrack.addNote(new Note(NotePitch.G1, NoteDuration.Duration.QUARTER, NoteLocation.getNoteLocation(i + 1, 5, NoteDuration.Duration.EIGHTH), 60));
             melodyTrack.addNote(new Note(NotePitch.As1, NoteDuration.Duration.QUARTER, NoteLocation.getNoteLocation(i + 1, 7, NoteDuration.Duration.EIGHTH), 100));
@@ -70,7 +81,7 @@ public class MainForm {
         }
 
         Track harmonyTrack = new Track();
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             harmonyTrack.addNote(new Note(NotePitch.C1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 1, NoteDuration.Duration.HALF), 50));
             harmonyTrack.addNote(new Note(NotePitch.Ds1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 1, NoteDuration.Duration.HALF), 50));
             harmonyTrack.addNote(new Note(NotePitch.G1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 1, NoteDuration.Duration.HALF), 50));
@@ -87,28 +98,68 @@ public class MainForm {
             harmonyTrack.addNote(new Note(NotePitch.As1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 3, NoteDuration.Duration.HALF), 50));
         }
         composition = new Composition();
+        composition.setMeasureCount(4);
         composition.setTempoBMP(200);
         composition.setTimeSignature(timeSignature);
         composition.setMelodyTrack(melodyTrack);
         composition.setHarmonyTrack(harmonyTrack);
+
+        sequencer = Player.getSequencer();
     }
 
     public void initialize(){
         initAdvancedSettings();
         initMyPresets();
 
-        TracksPlayerPane tracksPlayerPane = new TracksPlayerPane(composition, sequencer);
+        repeatCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> Player.getPlayerMetaEventListener().setLoop(newValue));
+
+        tracksPlayerPane = new TracksPlayerPane(composition, sequencer);
+        Runnable thread = () -> {
+            while(true) {
+                try {
+                    if (sequencer.isOpen()){
+                        Platform.runLater(() -> {
+                            tracksPlayerPane.setMarkerPosition((int)sequencer.getTickPosition());
+                        });
+                    }
+                    Thread.sleep(40);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Thread threadEx = new Thread(thread);
+        threadEx.start();
         playerHBox.getChildren().addAll(tracksPlayerPane);
     }
 
-    public void openEditor() {
-        MidiEditorWindow midiEditor = new MidiEditorWindow(composition.getMelodyTrack(), composition.getTimeSignature());
-        midiEditor.showModal();
+    public void play() {
+        try {
+            composition.setTempoBMP((int)tempoSpinner.getValue());
+            Player.playComposition(composition, repeatCheckBox.isSelected());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
-    public void playDemo() {
+    public void pause() {
         try {
-            sequencer = Player.playComposition(composition);
+            if (sequencer.isOpen()) {
+                long currentPostion = sequencer.getTickPosition();
+                sequencer.stop();
+                sequencer.setTickPosition(currentPostion);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void stop() {
+        try {
+            if (sequencer.isOpen()) {
+                sequencer.stop();
+                sequencer.close();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -185,7 +236,7 @@ public class MainForm {
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
             try {
-                SequenceBuilder sequenceBuilder = new SequenceBuilder(composition.getTimeSignature());
+                SequenceBuilder sequenceBuilder = new SequenceBuilder(composition.getTimeSignature(), composition.getMeasureCount());
                 sequenceBuilder.setMelodyTrack(composition.getMelodyTrack());
                 sequenceBuilder.setHarmonyTrack(composition.getHarmonyTrack());
                 MidiSystem.write(sequenceBuilder.getSequence(), 1, file);

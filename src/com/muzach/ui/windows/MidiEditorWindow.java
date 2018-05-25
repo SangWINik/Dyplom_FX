@@ -13,10 +13,10 @@ public class MidiEditorWindow extends Stage {
     private Parent root;
     private MidiEditor controller;
 
-    public MidiEditorWindow(Track track, TimeSignature timeSignature) {
+    public MidiEditorWindow(Track track, TimeSignature timeSignature, int measureCount) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("./com/muzach/ui/fxforms/midiEditor.fxml"));
-            loader.setController(new MidiEditor(track, timeSignature));
+            loader.setController(new MidiEditor(track, timeSignature, measureCount));
             root = loader.load();
             setResizable(false);
             setScene(new Scene(root));

@@ -1,6 +1,7 @@
 package com.muzach.music;
 
 public class Composition {
+    private int measureCount;
     private TimeSignature timeSignature;
     private int tempoBMP;
     private Track melodyTrack;
@@ -9,6 +10,14 @@ public class Composition {
     public Composition(){
         timeSignature = new TimeSignature(4, 4);
         tempoBMP = 120;
+    }
+
+    public int getMeasureCount() {
+        return measureCount;
+    }
+
+    public void setMeasureCount(int measureCount) {
+        this.measureCount = measureCount;
     }
 
     public TimeSignature getTimeSignature() {

@@ -26,6 +26,7 @@ import java.util.Map;
 
 public class PianorollPane extends Pane {
 
+    private int measureCount;
     private Track track;
     private TimeSignature timeSignature;
     private NoteDuration.Duration resolution = NoteDuration.Duration.EIGHTH;
@@ -46,7 +47,8 @@ public class PianorollPane extends Pane {
 
     private boolean addMode = false;
 
-    public PianorollPane(Track track, TimeSignature timeSignature, @NamedArg(value = "octaveCount", defaultValue = "3") int octaveCount, @NamedArg(value = "laneHeight", defaultValue = "4") int laneHeight, HBox toolsHBox, ComboBox valueComboBox, Slider velocitySlider) {
+    public PianorollPane(Track track, TimeSignature timeSignature, int measureCount, @NamedArg(value = "octaveCount", defaultValue = "3") int octaveCount, @NamedArg(value = "laneHeight", defaultValue = "4") int laneHeight, HBox toolsHBox, ComboBox valueComboBox, Slider velocitySlider) {
+        this.measureCount = measureCount;
         this.octaveCount = octaveCount;
         this.laneHeight = laneHeight;
         this.noteCount = octaveCount * 12;
@@ -97,7 +99,7 @@ public class PianorollPane extends Pane {
     }
 
     private void drawGrid() {
-        int measureCount = track.getMeasures().size();
+        int measureCount = this.measureCount;
         int tsNotesInMeasure = timeSignature.numinator * 8;
         int tickWidth = NoteDuration.getTsCount(resolution) * tsWidth;
         int ticksPerMeasure = tsNotesInMeasure / NoteDuration.getTsCount(resolution);
@@ -163,9 +165,11 @@ public class PianorollPane extends Pane {
             }
             Color color = new Color(1, 0, 1 - (note.getVelocity() / 127d), 1);
             rectangle.setFill(color);
-            this.getChildren().add(rectangle);
-            noteRectangleMap.put(note, rectangle);
-            addDragDetection(rectangle);
+            if (note.getLocation().getMeasureNumber() < measureCount) {
+                this.getChildren().add(rectangle);
+                noteRectangleMap.put(note, rectangle);
+                addDragDetection(rectangle);
+            }
         }
     }
 
@@ -267,7 +271,7 @@ public class PianorollPane extends Pane {
         int measureNum = (resLocation - 1) / ticksPerMeasure + 1;
         int beatInMeasure = resLocation - (measureNum - 1) * ticksPerMeasure;
         NoteLocation newLocation = NoteLocation.getNoteLocation(measureNum, beatInMeasure, resolution);
-        if (newLocation.getTSPosition() >= 0 && newLocation.getMeasureNumber() < track.getMeasures().size()) {
+        if (newLocation.getTSPosition() >= 0 && newLocation.getMeasureNumber() < measureCount) {
             locationChanged = true;
             note.setLocation(newLocation);
         }
