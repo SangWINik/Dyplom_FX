@@ -4,6 +4,7 @@ import com.muzach.Main;
 import com.muzach.generation.Preset;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SerializationHelper {
@@ -22,7 +23,7 @@ public class SerializationHelper {
     }
 
     public static List<Preset> deserializeMyPresets() {
-        List<Preset> presets = null;
+        List<Preset> presets;
         try {
             FileInputStream fileIn = new FileInputStream(path);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileIn);
@@ -30,7 +31,7 @@ public class SerializationHelper {
             objectInputStream.close();
             fileIn.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            return new ArrayList<>();
         }
         return presets;
     }

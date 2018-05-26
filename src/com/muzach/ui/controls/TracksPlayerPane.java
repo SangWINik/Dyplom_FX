@@ -74,15 +74,16 @@ public class TracksPlayerPane extends Pane {
         VBox tracksVBox = new VBox(verticalSpacing, melodyTrackHBox, harmonyTrackHBox);
         tracksVBox.setPadding(new Insets(padding, 0, 0, 0));
 
-        /*long tickCount = Player.getSequencer().getTickLength();
-        double markerTickRate = tickCount!=0?trackWidth/tickCount:0;
-        marker = new Line(markerPosition*markerTickRate, 0, markerPosition*markerTickRate, trackHeight*2 + verticalSpacing + padding);*/
         marker = new Line(0, 0, 0, trackHeight*2 + verticalSpacing + padding);
         this.getChildren().addAll(tracksVBox, marker);
     }
 
     public int getMarkerPosition() {
         return markerPosition;
+    }
+
+    public void setComposition(Composition composition) {
+        this.composition = composition;
     }
 
     public void setMarkerPosition(int markerPosition) {

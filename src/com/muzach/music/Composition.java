@@ -10,6 +10,8 @@ public class Composition {
     public Composition(){
         timeSignature = new TimeSignature(4, 4);
         tempoBMP = 120;
+        melodyTrack = new Track();
+        harmonyTrack = new Track();
     }
 
     public int getMeasureCount() {

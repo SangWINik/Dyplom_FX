@@ -16,6 +16,10 @@
 <?import javafx.scene.control.Spinner?>
 
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Slider?>
 <AnchorPane prefWidth="800.0" xmlns="http://javafx.com/javafx/9.0.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.muzach.ui.controllers.MainForm">
     <VBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -50,13 +54,46 @@
                                     <GridPane hgap="5" vgap="15">
                                         <padding><Insets left="20" top="20" bottom="20" right="20"/></padding>
                                         <children>
-                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Time Signature:"/>
-                                            <ComboBox GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="timeSignatureComboBox"/>
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                                <font><Font size="18" /></font>
+                                                <padding><Insets bottom="0"/></padding>
+                                                Rhythm
+                                            </Label>
 
-                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Scale:"/>
-                                            <ComboBox GridPane.columnIndex="1" GridPane.rowIndex="1"></ComboBox>
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Time Signature:"/>
+                                            <ComboBox prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="timeSignatureComboBox"/>
 
-                                            <Button GridPane.columnIndex="0" GridPane.rowIndex="2" fx:id="savePresetButton" onAction="#savePreset" text="Save Preset">
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="2" text="Note Values:"/>
+                                            <Slider min="1" max="100" value="50" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="noteValuesSlider"/>
+
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="3" text="Pause Frequency:"/>
+                                            <Slider min="1" max="100" value="50" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" fx:id="pauseFrequencySlider"/>
+
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="4">
+                                                <font><Font size="18" /></font>
+                                                <padding><Insets top="5"/></padding>
+                                                Melody
+                                            </Label>
+
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="5" text="Scale:"/>
+                                            <ComboBox prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="5" fx:id="scaleComboBox"/>
+
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="6" text="Pitch Jumps:"/>
+                                            <Slider min="1" max="100" value="50" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="6" fx:id="pitchJumpsSlider"/>
+
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="7">
+                                                <font><Font size="18" /></font>
+                                                <padding><Insets top="5"/></padding>
+                                                Harmony
+                                            </Label>
+
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="8" text="Change Frequency:"/>
+                                            <Slider min="1" max="100" value="50" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="8" fx:id="chordChangeFrequencySlider"/>
+
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="9" text="Chords Color:"/>
+                                            <Slider min="1" max="100" value="50" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="9" fx:id="chordColorSlider"/>
+
+                                            <Button GridPane.columnIndex="0" GridPane.rowIndex="10" fx:id="savePresetButton" onAction="#savePreset" text="Save Preset">
                                                 <VBox.margin>
                                                     <Insets top="10.0"/>
                                                 </VBox.margin>
@@ -75,10 +112,10 @@
             </TabPane>
             <HBox spacing="10" alignment="CENTER_RIGHT">
                 <padding><Insets top="10" bottom="10"/></padding>
-                <Label>Tempo:</Label>
-                <Spinner fx:id="tempoSpinner" prefWidth="75" min="20" max="400" initialValue="120"/>
                 <Button fx:id="saveMidiButton" onAction="#saveMidi">Save MIDI</Button>
-                <Button fx:id="generateButton">Generate</Button>
+                <Label>Measure count:</Label>
+                <Spinner fx:id="measureCountSpinner" prefWidth="75" min="1" max="16" initialValue="4"/>
+                <Button fx:id="generateButton" onAction="#generate">Generate</Button>
             </HBox>
             <HBox fx:id="playerHBox">
             </HBox>
@@ -86,9 +123,35 @@
                 <padding><Insets top="10"></Insets></padding>
                 <children>
                     <CheckBox fx:id="repeatCheckBox">Repeat</CheckBox>
-                    <Button fx:id="playButton" onAction="#play">Play</Button>
-                    <Button fx:id="pauseButton" onAction="#pause">Pause</Button>
-                    <Button fx:id="stopButton" onAction="#stop">Stop</Button>
+                    <Button fx:id="playButton" onAction="#play">
+                        <graphic>
+                            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@../resources/play.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="pauseButton" onAction="#pause">
+                        <graphic>
+                            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@../resources/pause.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="stopButton" onAction="#stop">
+                        <graphic>
+                            <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@../resources/stop.png"/>
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                    <Label>Tempo:</Label>
+                    <Spinner fx:id="tempoSpinner" prefWidth="75" min="20" max="400" initialValue="120"/>
                 </children>
             </HBox>
         </children>

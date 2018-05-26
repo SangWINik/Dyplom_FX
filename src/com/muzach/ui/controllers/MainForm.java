@@ -1,6 +1,8 @@
 package com.muzach.ui.controllers;
 
+import com.muzach.generation.Generator;
 import com.muzach.generation.Preset;
+import com.muzach.generation.Scales;
 import com.muzach.midi.Player;
 import com.muzach.midi.SequenceBuilder;
 import com.muzach.midi.note.NoteDuration;
@@ -8,49 +10,42 @@ import com.muzach.midi.note.NoteLocation;
 import com.muzach.music.*;
 import com.muzach.ui.controls.PresetPane;
 import com.muzach.ui.controls.TracksPlayerPane;
-import com.muzach.ui.windows.MidiEditorWindow;
 import com.muzach.ui.windows.SavePresetDialog;
 import com.muzach.utils.SerializationHelper;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import javax.sound.midi.MidiSystem;
-import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainForm {
 
-    public Button editorButton;
     private Stage stage;
 
     @FXML
-    private Button playButton;
-    @FXML
-    private Button pauseButton;
-    @FXML
-    private Button stopButton;
-    @FXML
     private ComboBox timeSignatureComboBox;
     @FXML
-    private Button savePresetButton;
+    private Slider noteValuesSlider;
+    @FXML
+    private Slider pauseFrequencySlider;
+    @FXML
+    private ComboBox scaleComboBox;
+    @FXML
+    private Slider pitchJumpsSlider;
+    @FXML
+    private Slider chordChangeFrequencySlider;
+    @FXML
+    private Slider chordColorSlider;
     @FXML
     private VBox myPresetsVBox;
     @FXML
@@ -59,6 +54,9 @@ public class MainForm {
     private Spinner tempoSpinner;
     @FXML
     private CheckBox repeatCheckBox;
+    @FXML
+    private Spinner measureCountSpinner;
+
     private TracksPlayerPane tracksPlayerPane;
 
     private Composition composition;
@@ -131,6 +129,15 @@ public class MainForm {
         Thread threadEx = new Thread(thread);
         threadEx.start();
         playerHBox.getChildren().addAll(tracksPlayerPane);
+    }
+
+    public void generate() {
+        composition = new Composition();
+        composition.setMeasureCount((int) measureCountSpinner.getValue());
+        Generator generator = new Generator(composition, parseAdvancedSettings());
+        composition = generator.generate();
+        tracksPlayerPane.setComposition(composition);
+        tracksPlayerPane.reDraw();
     }
 
     public void play() {
@@ -212,20 +219,40 @@ public class MainForm {
         TimeSignature ts4 = new TimeSignature(5, 4);
         TimeSignature ts5 = new TimeSignature(7, 4);
         timeSignatureComboBox.getItems().addAll(ts1, ts2, ts3, ts4, ts5);
-        timeSignatureComboBox.setValue(ts3);
+        scaleComboBox.getItems().addAll(Scales.getScales());
+        Preset defaultPreset = new Preset();
+        defaultPreset.setTimeSignature(ts3);
+        defaultPreset.setNoteValues(50);
+        defaultPreset.setPauseFrequency(50);
+        defaultPreset.setScale(Scales.getScales().get(0));
+        defaultPreset.setPitchJumps(50);
+        defaultPreset.setChordChangeFrequency(50);
+        defaultPreset.setChordColor(50);
+        setAdvancedSettingsWithPreset(defaultPreset);
     }
 
     private Preset parseAdvancedSettings(){
         Preset preset = new Preset();
         preset.setTimeSignature((TimeSignature) timeSignatureComboBox.getValue());
-        //set other settings
+        preset.setNoteValues(noteValuesSlider.getValue());
+        preset.setPauseFrequency(pauseFrequencySlider.getValue());
+        preset.setScale((Scale) scaleComboBox.getValue());
+        preset.setPitchJumps(pitchJumpsSlider.getValue());
+        preset.setChordChangeFrequency(chordChangeFrequencySlider.getValue());
+        preset.setChordColor(chordColorSlider.getValue());
         return preset;
     }
 
     private void setAdvancedSettingsWithPreset(Preset preset){
-        TimeSignature newValue = (TimeSignature) timeSignatureComboBox.getItems().stream().filter(t -> ((TimeSignature)(t)).toString().equals(preset.getTimeSignature().toString())).findFirst().get();
-        timeSignatureComboBox.setValue(newValue);
-        //todo other fields
+        TimeSignature newTimeSignature = (TimeSignature) timeSignatureComboBox.getItems().stream().filter(t -> ((TimeSignature)(t)).toString().equals(preset.getTimeSignature().toString())).findFirst().get();
+        Scale newScale = (Scale) scaleComboBox.getItems().stream().filter(s -> ((Scale)(s)).toString().equals(preset.getScale().toString())).findFirst().get();
+        timeSignatureComboBox.setValue(newTimeSignature);
+        noteValuesSlider.setValue(preset.getNoteValues());
+        pauseFrequencySlider.setValue(preset.getPauseFrequency());
+        scaleComboBox.setValue(newScale);
+        pitchJumpsSlider.setValue(preset.getPitchJumps());
+        chordChangeFrequencySlider.setValue(preset.getChordChangeFrequency());
+        chordColorSlider.setValue(preset.getChordColor());
     }
 
     public void saveMidi(){

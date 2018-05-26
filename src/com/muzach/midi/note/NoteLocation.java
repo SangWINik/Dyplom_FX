@@ -8,14 +8,22 @@ public class NoteLocation {
     private int measureNumber;
     private int tsPosition;
 
-    private NoteLocation() {
-    }
+    private NoteLocation() {}
 
     public static NoteLocation getNoteLocation(int measureNumber, int beatsInMeasure, NoteDuration.Duration resolution) {
         NoteLocation nl = new NoteLocation();
         nl.tsPosition = (beatsInMeasure - 1) * NoteDuration.getTsCount(resolution);
         nl.measureNumber = measureNumber - 1;
         return nl;
+    }
+
+    public static NoteLocation getNoteLocation(int tsPosition) {
+        int tsInMeasureCount = measureLength*NoteDuration.getTsCount(NoteDuration.Duration.QUARTER);
+
+        NoteLocation location = new NoteLocation();
+        location.measureNumber = tsPosition/tsInMeasureCount;
+        location.tsPosition = tsPosition - location.measureNumber*tsInMeasureCount;
+        return location;
     }
 
     public static void setMeasureLength(int measureLength) {

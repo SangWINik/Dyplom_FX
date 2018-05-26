@@ -1,5 +1,6 @@
 package com.muzach.ui.controls;
 
+import com.muzach.midi.Player;
 import com.muzach.midi.note.NoteDuration;
 import com.muzach.midi.note.NoteLocation;
 import com.muzach.music.Note;
@@ -183,6 +184,7 @@ public class PianorollPane extends Pane {
                         selectNote(note);
                         selectedOffset = (int) (event.getX() - noteRectangleMap.get(note).getX());
                         select = true;
+                        Player.playOneNote(note.getPitch());
                         break;
                     }
                 }
@@ -202,6 +204,7 @@ public class PianorollPane extends Pane {
                 Note note = new Note(NotePitch.values()[pitchOrdinal], resolution, NoteLocation.getNoteLocation(measureNum, beatInMeasure, resolution), 100);
                 track.addNote(note);
                 selectNote(note);
+                Player.playOneNote(note.getPitch());
                 exitAddMode();
             }
         }
@@ -256,6 +259,7 @@ public class PianorollPane extends Pane {
         if (pitchOrdinal >= 0 && pitchOrdinal < noteCount) {
             NotePitch newPitch = NotePitch.values()[pitchOrdinal];
             if (note.getPitch() != newPitch) {
+                Player.playOneNote(newPitch);
                 locationChanged = true;
                 note.setPitch(newPitch);
             }
