@@ -30,7 +30,11 @@
                         <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0">
                                 <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <VBox fx:id="defaultPresetsVBox" spacing="10">
+                                        <padding><Insets left="10" top="10"></Insets></padding>
+                                    </VBox>
+                                </ScrollPane>
                             </AnchorPane>
                         </content>
                     </Tab>
@@ -56,30 +60,29 @@
                                         <children>
                                             <Label GridPane.columnIndex="0" GridPane.rowIndex="0">
                                                 <font><Font size="18" /></font>
-                                                <padding><Insets bottom="0"/></padding>
-                                                Rhythm
-                                            </Label>
-
-                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Time Signature:"/>
-                                            <ComboBox prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="timeSignatureComboBox"/>
-
-                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="2" text="Note Values:"/>
-                                            <Slider min="1" max="100" value="50" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="noteValuesSlider"/>
-
-                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="3" text="Pause Frequency:"/>
-                                            <Slider min="1" max="100" value="50" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="3" fx:id="pauseFrequencySlider"/>
-
-                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="4">
-                                                <font><Font size="18" /></font>
-                                                <padding><Insets top="5"/></padding>
                                                 Melody
                                             </Label>
 
-                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="5" text="Scale:"/>
-                                            <ComboBox prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="5" fx:id="scaleComboBox"/>
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Scale / Mode:"/>
+                                            <ComboBox prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="scaleComboBox"/>
 
-                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="6" text="Pitch Jumps:"/>
-                                            <Slider min="1" max="100" value="50" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="6" fx:id="pitchJumpsSlider"/>
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="2" text="Pitch Jumps:"/>
+                                            <Slider min="1" max="100" value="50" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="pitchJumpsSlider"/>
+
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="3">
+                                                <font><Font size="18" /></font>
+                                                <padding><Insets top="5"/></padding>
+                                                Rhythm
+                                            </Label>
+
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="4" text="Time Signature:"/>
+                                            <ComboBox prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="4" fx:id="timeSignatureComboBox"/>
+
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="5" text="Note Values:"/>
+                                            <Slider min="1" max="100" value="50" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="5" fx:id="noteValuesSlider"/>
+
+                                            <Label GridPane.columnIndex="0" GridPane.rowIndex="6" text="Pause Frequency:"/>
+                                            <Slider min="1" max="100" value="50" maxWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="6" fx:id="pauseFrequencySlider"/>
 
                                             <Label GridPane.columnIndex="0" GridPane.rowIndex="7">
                                                 <font><Font size="18" /></font>
@@ -151,7 +154,7 @@
                         </graphic>
                     </Button>
                     <Label>Tempo:</Label>
-                    <Spinner fx:id="tempoSpinner" prefWidth="75" min="20" max="400" initialValue="120"/>
+                    <Spinner fx:id="tempoSpinner" prefWidth="75" min="20" max="400" initialValue="80"/>
                 </children>
             </HBox>
         </children>

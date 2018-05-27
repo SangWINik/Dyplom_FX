@@ -1,8 +1,5 @@
 package com.muzach.music;
 
-import com.muzach.midi.note.NoteDuration;
-import com.muzach.midi.note.NoteLocation;
-
 public class Note {
     private NotePitch pitch;
     private int velocity = 100;

@@ -1,14 +1,13 @@
 package com.muzach.midi;
 
-import com.muzach.midi.note.NoteDuration;
-import com.muzach.midi.note.NoteLocation;
+import com.muzach.music.NoteDuration;
+import com.muzach.music.NoteLocation;
 import com.muzach.music.Note;
 import com.muzach.music.TimeSignature;
 
 import javax.sound.midi.*;
 
 public class SequenceBuilder {
-    //todo make a property file for these
     public static final int TICKS_PER_QUARTER_NOTE = 24;
 
     private Sequence sequence;
@@ -16,11 +15,14 @@ public class SequenceBuilder {
     private Track melodyTrack;
     private Track harmonyTrack;
 
-    public SequenceBuilder(TimeSignature timeSignature, int measureCount) throws InvalidMidiDataException {
+    private boolean isForMidiSave = false;
+
+    public SequenceBuilder(TimeSignature timeSignature, int measureCount, boolean isForMidiSave) throws InvalidMidiDataException {
         this.measureCount = measureCount;
         sequence = new Sequence(Sequence.PPQ, TICKS_PER_QUARTER_NOTE);
         melodyTrack = sequence.createTrack();
         harmonyTrack = sequence.createTrack();
+        this.isForMidiSave = isForMidiSave;
         setTimeSignature(timeSignature);
     }
 
@@ -67,13 +69,21 @@ public class SequenceBuilder {
             //note on
             sm = new ShortMessage();
             sm.setMessage(0x90, note.getPitch().getMidiNote(), note.getVelocity());
-            me = new MidiEvent(sm, note.getLocation().getTick());
+            long tick = note.getLocation().getTick();
+            if (isForMidiSave) {
+                tick -= 1;
+            }
+            me = new MidiEvent(sm, tick);
             track.add(me);
 
             //note off
             sm = new ShortMessage();
             sm.setMessage(0x80, note.getPitch().getMidiNote(), note.getVelocity());
-            me = new MidiEvent(sm, note.getLocation().getTick() + NoteDuration.getTickCount(note.getDuration()));
+            tick = note.getLocation().getTick() + NoteDuration.getTickCount(note.getDuration());
+            if (isForMidiSave) {
+                tick -= 1;
+            }
+            me = new MidiEvent(sm, tick);
             track.add(me);
         } catch (Exception e){
             e.printStackTrace();
@@ -84,7 +94,11 @@ public class SequenceBuilder {
         MetaMessage mm = new MetaMessage();
         byte bytes[] = {};
         mm.setMessage(0x2F, bytes, 0x00);
-        MidiEvent me = new MidiEvent(mm, NoteLocation.getNoteLocation(measureCount + 1, 1, NoteDuration.Duration.THIRTYSECOND).getTick());
+        long tick = NoteLocation.getNoteLocation(measureCount + 1, 1, NoteDuration.Duration.THIRTYSECOND).getTick();
+        if (isForMidiSave) {
+            tick -= 1;
+        }
+        MidiEvent me = new MidiEvent(mm, tick);
         track.add(me);
     }
 }

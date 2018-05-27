@@ -1,12 +1,11 @@
 package com.muzach.generation;
 
-import com.muzach.midi.note.NoteDuration;
-import com.muzach.midi.note.NoteLocation;
+import com.muzach.music.NoteDuration;
+import com.muzach.music.NoteLocation;
 import com.muzach.music.Note;
 import com.muzach.music.NotePitch;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

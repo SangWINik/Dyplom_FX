@@ -1,4 +1,4 @@
-package com.muzach.midi.note;
+package com.muzach.music;
 
 import com.muzach.midi.SequenceBuilder;
 
@@ -24,6 +24,10 @@ public class NoteLocation {
         location.measureNumber = tsPosition/tsInMeasureCount;
         location.tsPosition = tsPosition - location.measureNumber*tsInMeasureCount;
         return location;
+    }
+
+    public static boolean isOnFirstBeat(NoteLocation location) {
+        return location.tsPosition == 0;
     }
 
     public static void setMeasureLength(int measureLength) {

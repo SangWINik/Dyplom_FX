@@ -1,6 +1,6 @@
 package com.muzach.generation;
 
-import com.muzach.midi.note.NoteLocation;
+import com.muzach.music.NoteLocation;
 import com.muzach.music.Composition;
 
 public class Generator {

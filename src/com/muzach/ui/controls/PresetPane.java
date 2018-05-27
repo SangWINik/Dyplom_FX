@@ -46,7 +46,7 @@ public class PresetPane extends GridPane {
         Label descriptionLabel = new Label(preset.getDescription());
         descriptionLabel.setWrapText(true);
         descriptionLabel.setMaxHeight(100);
-        ImageView imageView = new ImageView("./com/muzach/ui/resources/delete.png");
+        ImageView imageView = new ImageView("com/muzach/ui/resources/delete.png");
         imageView.setFitWidth(17);
         imageView.setFitHeight(17);
         deleteButton = new Button("", imageView);

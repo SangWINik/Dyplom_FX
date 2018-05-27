@@ -1,11 +1,11 @@
-package com.muzach.midi.note;
+package com.muzach.music;
 
 
 import com.muzach.midi.SequenceBuilder;
 
 import java.util.EnumMap;
 
-import static com.muzach.midi.note.NoteDuration.Duration.*;
+import static com.muzach.music.NoteDuration.Duration.*;
 
 public class NoteDuration {
 

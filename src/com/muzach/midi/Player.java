@@ -28,7 +28,7 @@ public class Player {
         try {
             //sequencer.close();
             if (!sequencer.isOpen()) {
-                SequenceBuilder sequenceBuilder = new SequenceBuilder(composition.getTimeSignature(), composition.getMeasureCount());
+                SequenceBuilder sequenceBuilder = new SequenceBuilder(composition.getTimeSignature(), composition.getMeasureCount(), false);
                 sequenceBuilder.setMelodyTrack(composition.getMelodyTrack());
                 sequenceBuilder.setHarmonyTrack(composition.getHarmonyTrack());
                 sequenceBuilder.setInstrument(0);

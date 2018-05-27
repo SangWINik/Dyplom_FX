@@ -1,6 +1,6 @@
 package com.muzach.ui.controls;
 
-import com.muzach.midi.note.NoteDuration;
+import com.muzach.music.NoteDuration;
 import com.muzach.music.Note;
 import com.muzach.music.NotePitch;
 import com.muzach.music.TimeSignature;

@@ -2,19 +2,18 @@ package com.muzach.ui.controllers;
 
 import com.muzach.generation.Generator;
 import com.muzach.generation.Preset;
-import com.muzach.generation.Scales;
+import com.muzach.populators.DefaultPresets;
+import com.muzach.populators.Scales;
 import com.muzach.midi.Player;
 import com.muzach.midi.SequenceBuilder;
-import com.muzach.midi.note.NoteDuration;
-import com.muzach.midi.note.NoteLocation;
+import com.muzach.music.NoteDuration;
+import com.muzach.music.NoteLocation;
 import com.muzach.music.*;
 import com.muzach.ui.controls.PresetPane;
 import com.muzach.ui.controls.TracksPlayerPane;
 import com.muzach.ui.windows.SavePresetDialog;
 import com.muzach.utils.SerializationHelper;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -49,6 +48,8 @@ public class MainForm {
     @FXML
     private VBox myPresetsVBox;
     @FXML
+    private VBox defaultPresetsVBox;
+    @FXML
     private HBox playerHBox;
     @FXML
     private Spinner tempoSpinner;
@@ -60,6 +61,7 @@ public class MainForm {
     private TracksPlayerPane tracksPlayerPane;
 
     private Composition composition;
+    private List<Preset> defaultPresets;
     private List<Preset> myPresets;
     private List<PresetPane> presetPanes;
     private Sequencer sequencer;
@@ -106,8 +108,11 @@ public class MainForm {
     }
 
     public void initialize(){
+        presetPanes = new ArrayList<>();
+
         initAdvancedSettings();
         initMyPresets();
+        initDefaultPresets();
 
         repeatCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> Player.getPlayerMetaEventListener().setLoop(newValue));
 
@@ -129,6 +134,90 @@ public class MainForm {
         Thread threadEx = new Thread(thread);
         threadEx.start();
         playerHBox.getChildren().addAll(tracksPlayerPane);
+    }
+
+    private void initDefaultPresets(){
+        defaultPresetsVBox.getChildren().clear();
+        defaultPresets = DefaultPresets.get();
+        for (Preset preset: defaultPresets) {
+            PresetPane presetPane = new PresetPane(preset, true);
+            presetPanes.add(presetPane);
+            defaultPresetsVBox.getChildren().add(presetPane);
+        }
+        initPresetEvents();
+    }
+
+    private void initMyPresets(){
+        myPresetsVBox.getChildren().clear();
+        myPresets = SerializationHelper.deserializeMyPresets();
+        if (myPresets == null || myPresets.isEmpty()) {
+            Label noPresets = new Label("There are no saved presets right now. Go to Advanced Settings to create your own preset or Presets to choose one of predefined.");
+            myPresetsVBox.getChildren().add(noPresets);
+        }
+        for (Preset preset: myPresets){
+            PresetPane presetPane = new PresetPane(preset, false);
+            presetPanes.add(presetPane);
+            myPresetsVBox.getChildren().add(presetPane);
+        }
+        initPresetEvents();
+    }
+
+    private void initPresetEvents() {
+        for (PresetPane presetPane: presetPanes) {
+            presetPane.setOnMousePressed(event -> {
+                presetPane.select();
+                setAdvancedSettingsWithPreset(presetPane.getPreset());
+                for (PresetPane pp: presetPanes) {
+                    if (pp != presetPane) {
+                        pp.deselect();
+                    }
+                }
+            });
+            presetPane.setOnDeleteAction(event -> deletePreset(presetPane.getPreset()));
+        }
+    }
+
+    private void initAdvancedSettings() {
+        TimeSignature ts1 = new TimeSignature(2, 4);
+        TimeSignature ts2 = new TimeSignature(3, 4);
+        TimeSignature ts3 = new TimeSignature(4, 4);
+        TimeSignature ts4 = new TimeSignature(5, 4);
+        TimeSignature ts5 = new TimeSignature(7, 4);
+        timeSignatureComboBox.getItems().addAll(ts1, ts2, ts3, ts4, ts5);
+        scaleComboBox.getItems().addAll(Scales.getScales());
+        Preset defaultPreset = new Preset();
+        defaultPreset.setTimeSignature(ts3);
+        defaultPreset.setNoteValues(50);
+        defaultPreset.setPauseFrequency(50);
+        defaultPreset.setScale(Scales.getScales().get(0));
+        defaultPreset.setPitchJumps(50);
+        defaultPreset.setChordChangeFrequency(50);
+        defaultPreset.setChordColor(50);
+        setAdvancedSettingsWithPreset(defaultPreset);
+    }
+
+    private Preset parseAdvancedSettings(){
+        Preset preset = new Preset();
+        preset.setTimeSignature((TimeSignature) timeSignatureComboBox.getValue());
+        preset.setNoteValues(noteValuesSlider.getValue());
+        preset.setPauseFrequency(pauseFrequencySlider.getValue());
+        preset.setScale((Scale) scaleComboBox.getValue());
+        preset.setPitchJumps(pitchJumpsSlider.getValue());
+        preset.setChordChangeFrequency(chordChangeFrequencySlider.getValue());
+        preset.setChordColor(chordColorSlider.getValue());
+        return preset;
+    }
+
+    private void setAdvancedSettingsWithPreset(Preset preset){
+        TimeSignature newTimeSignature = (TimeSignature) timeSignatureComboBox.getItems().stream().filter(t -> ((TimeSignature)(t)).toString().equals(preset.getTimeSignature().toString())).findFirst().get();
+        Scale newScale = (Scale) scaleComboBox.getItems().stream().filter(s -> ((Scale)(s)).toString().equals(preset.getScale().toString())).findFirst().get();
+        timeSignatureComboBox.setValue(newTimeSignature);
+        noteValuesSlider.setValue(preset.getNoteValues());
+        pauseFrequencySlider.setValue(preset.getPauseFrequency());
+        scaleComboBox.setValue(newScale);
+        pitchJumpsSlider.setValue(preset.getPitchJumps());
+        chordChangeFrequencySlider.setValue(preset.getChordChangeFrequency());
+        chordColorSlider.setValue(preset.getChordColor());
     }
 
     public void generate() {
@@ -184,77 +273,6 @@ public class MainForm {
         initMyPresets();
     }
 
-    private void initMyPresets(){
-        myPresetsVBox.getChildren().clear();
-        myPresets = SerializationHelper.deserializeMyPresets();
-        presetPanes = new ArrayList<>();
-        for (Preset preset: myPresets){
-            PresetPane presetPane = new PresetPane(preset, false);
-            presetPanes.add(presetPane);
-            myPresetsVBox.getChildren().add(presetPane);
-        }
-        for (PresetPane presetPane: presetPanes) {
-            presetPane.setOnMousePressed(event -> {
-                presetPane.select();
-                setAdvancedSettingsWithPreset(presetPane.getPreset());
-                for (PresetPane pp: presetPanes) {
-                    if (pp != presetPane) {
-                        pp.deselect();
-                    }
-                }
-            });
-            presetPane.setOnDeleteAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    deletePreset(presetPane.getPreset());
-                }
-            });
-        }
-    }
-
-    private void initAdvancedSettings(){
-        TimeSignature ts1 = new TimeSignature(2, 4);
-        TimeSignature ts2 = new TimeSignature(3, 4);
-        TimeSignature ts3 = new TimeSignature(4, 4);
-        TimeSignature ts4 = new TimeSignature(5, 4);
-        TimeSignature ts5 = new TimeSignature(7, 4);
-        timeSignatureComboBox.getItems().addAll(ts1, ts2, ts3, ts4, ts5);
-        scaleComboBox.getItems().addAll(Scales.getScales());
-        Preset defaultPreset = new Preset();
-        defaultPreset.setTimeSignature(ts3);
-        defaultPreset.setNoteValues(50);
-        defaultPreset.setPauseFrequency(50);
-        defaultPreset.setScale(Scales.getScales().get(0));
-        defaultPreset.setPitchJumps(50);
-        defaultPreset.setChordChangeFrequency(50);
-        defaultPreset.setChordColor(50);
-        setAdvancedSettingsWithPreset(defaultPreset);
-    }
-
-    private Preset parseAdvancedSettings(){
-        Preset preset = new Preset();
-        preset.setTimeSignature((TimeSignature) timeSignatureComboBox.getValue());
-        preset.setNoteValues(noteValuesSlider.getValue());
-        preset.setPauseFrequency(pauseFrequencySlider.getValue());
-        preset.setScale((Scale) scaleComboBox.getValue());
-        preset.setPitchJumps(pitchJumpsSlider.getValue());
-        preset.setChordChangeFrequency(chordChangeFrequencySlider.getValue());
-        preset.setChordColor(chordColorSlider.getValue());
-        return preset;
-    }
-
-    private void setAdvancedSettingsWithPreset(Preset preset){
-        TimeSignature newTimeSignature = (TimeSignature) timeSignatureComboBox.getItems().stream().filter(t -> ((TimeSignature)(t)).toString().equals(preset.getTimeSignature().toString())).findFirst().get();
-        Scale newScale = (Scale) scaleComboBox.getItems().stream().filter(s -> ((Scale)(s)).toString().equals(preset.getScale().toString())).findFirst().get();
-        timeSignatureComboBox.setValue(newTimeSignature);
-        noteValuesSlider.setValue(preset.getNoteValues());
-        pauseFrequencySlider.setValue(preset.getPauseFrequency());
-        scaleComboBox.setValue(newScale);
-        pitchJumpsSlider.setValue(preset.getPitchJumps());
-        chordChangeFrequencySlider.setValue(preset.getChordChangeFrequency());
-        chordColorSlider.setValue(preset.getChordColor());
-    }
-
     public void saveMidi(){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save MIDI file");
@@ -263,7 +281,7 @@ public class MainForm {
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
             try {
-                SequenceBuilder sequenceBuilder = new SequenceBuilder(composition.getTimeSignature(), composition.getMeasureCount());
+                SequenceBuilder sequenceBuilder = new SequenceBuilder(composition.getTimeSignature(), composition.getMeasureCount(), true);
                 sequenceBuilder.setMelodyTrack(composition.getMelodyTrack());
                 sequenceBuilder.setHarmonyTrack(composition.getHarmonyTrack());
                 MidiSystem.write(sequenceBuilder.getSequence(), 1, file);

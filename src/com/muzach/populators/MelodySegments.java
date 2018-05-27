@@ -1,7 +1,8 @@
-package com.muzach.generation;
+package com.muzach.populators;
 
-import com.muzach.midi.note.NoteDuration;
-import com.muzach.midi.note.NoteLocation;
+import com.muzach.generation.MelodySegment;
+import com.muzach.music.NoteDuration;
+import com.muzach.music.NoteLocation;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -21,6 +21,20 @@ public class Preset implements Serializable {
     private double chordChangeFrequency;
     private double chordColor;
 
+    public Preset(){}
+
+    public Preset(String name, String description, TimeSignature timeSignature, double noteValues, double pauseFrequency, Scale scale, double pitchJumps, double chordChangeFrequency, double chordColor) {
+        this.name = name;
+        this.description = description;
+        this.timeSignature = timeSignature;
+        this.noteValues = noteValues;
+        this.pauseFrequency = pauseFrequency;
+        this.scale = scale;
+        this.pitchJumps = pitchJumps;
+        this.chordChangeFrequency = chordChangeFrequency;
+        this.chordColor = chordColor;
+    }
+
     public String getName() {
         return name;
     }
