@@ -1,7 +1,4 @@
-package com.muzach.utils;
-
-import com.muzach.Main;
-import com.muzach.generation.Preset;
+package com.muzach.preset;
 
 import java.io.*;
 import java.util.ArrayList;

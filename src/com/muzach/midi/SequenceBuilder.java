@@ -39,14 +39,14 @@ public class SequenceBuilder {
         harmonyTrack.add(me);
     }
 
-    public void setMelodyTrack(com.muzach.music.Track track) throws Exception {
+    public void setMelodyTrack(com.muzach.generation.Track track) throws Exception {
         for (Note note: track.getNotes()){
             setNote(melodyTrack, note);
         }
         setEndOfTrack(melodyTrack);
     }
 
-    public void setHarmonyTrack(com.muzach.music.Track track) throws Exception {
+    public void setHarmonyTrack(com.muzach.generation.Track track) throws Exception {
         for (Note note: track.getNotes()){
             setNote(harmonyTrack, note);
         }

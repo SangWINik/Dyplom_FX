@@ -1,7 +1,6 @@
-package com.muzach.populators;
+package com.muzach.utils.populators;
 
-import com.muzach.generation.Preset;
-import com.muzach.music.Scale;
+import com.muzach.preset.Preset;
 import com.muzach.music.TimeSignature;
 
 import java.util.ArrayList;

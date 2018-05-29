@@ -4,7 +4,7 @@ import com.muzach.music.NoteDuration;
 import com.muzach.music.Note;
 import com.muzach.music.NotePitch;
 import com.muzach.music.TimeSignature;
-import com.muzach.music.Track;
+import com.muzach.generation.Track;
 import com.muzach.ui.windows.MidiEditorWindow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;

@@ -1,4 +1,6 @@
-package com.muzach.music;
+package com.muzach.generation;
+
+import com.muzach.music.Note;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,19 +15,6 @@ public class Track {
 
     public Track(){
         notes = new ArrayList<>();
-    }
-
-    public List<List<Note>> getMeasures() {
-        int measureCount = notes.stream().max(Comparator.comparingInt(n -> n.getLocation().getMeasureNumber())).get().getLocation().getMeasureNumber() + 1;
-        List<Note>[] measures = new List[measureCount];
-        for (Note n : notes) {
-            int measure = n.getLocation().getMeasureNumber();
-            if (measures[measure] == null){
-                measures[measure] = new ArrayList<>();
-            }
-            measures[measure].add(n);
-        }
-        return Arrays.asList(measures);
     }
 
     public boolean isMuted() {

@@ -1,4 +1,6 @@
-package com.muzach.music;
+package com.muzach.generation;
+
+import com.muzach.music.TimeSignature;
 
 public class Composition {
     private int measureCount;

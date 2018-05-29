@@ -1,4 +1,4 @@
-package com.muzach.populators;
+package com.muzach.utils.populators;
 
 import com.muzach.generation.MelodySegment;
 import com.muzach.music.NoteDuration;

@@ -1,6 +1,9 @@
-package com.muzach.midi;
+package com.muzach.playback;
 
-import com.muzach.music.Composition;
+import com.muzach.generation.Composition;
+import com.muzach.midi.IMidiManager;
+import com.muzach.midi.MidiManager;
+import com.muzach.midi.SequenceBuilder;
 import com.muzach.music.NotePitch;
 
 import javax.sound.midi.*;
@@ -24,15 +27,11 @@ public class Player {
         }
     }
 
-    public static Sequencer playComposition(Composition composition, boolean loop) {
+    public static void playComposition(Composition composition, boolean loop) {
         try {
-            //sequencer.close();
             if (!sequencer.isOpen()) {
-                SequenceBuilder sequenceBuilder = new SequenceBuilder(composition.getTimeSignature(), composition.getMeasureCount(), false);
-                sequenceBuilder.setMelodyTrack(composition.getMelodyTrack());
-                sequenceBuilder.setHarmonyTrack(composition.getHarmonyTrack());
-                sequenceBuilder.setInstrument(0);
-                Sequence sequence = sequenceBuilder.getSequence();
+                IMidiManager midiManager = new MidiManager();
+                Sequence sequence = midiManager.getMidiSequence(composition);
                 sequencer.setSequence(sequence);
                 sequencer.open();
             }
@@ -47,11 +46,31 @@ public class Player {
                 sequencer.setTrackMute(1, true);
             }
             sequencer.start();
-            //set on finish event handler
-            return sequencer;
         } catch (Exception e){
             e.printStackTrace();
-            return null;
+        }
+    }
+
+    public static void pauseComposition() {
+        try {
+            if (sequencer.isOpen()) {
+                long currentPostion = sequencer.getTickPosition();
+                sequencer.stop();
+                sequencer.setTickPosition(currentPostion);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void stopComposition() {
+        try {
+            if (sequencer.isOpen()) {
+                sequencer.stop();
+                sequencer.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

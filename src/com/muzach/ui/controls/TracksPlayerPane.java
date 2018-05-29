@@ -1,7 +1,7 @@
 package com.muzach.ui.controls;
 
-import com.muzach.midi.Player;
-import com.muzach.music.Composition;
+import com.muzach.playback.Player;
+import com.muzach.generation.Composition;
 import com.muzach.ui.windows.MidiEditorWindow;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

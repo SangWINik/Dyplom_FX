@@ -1,14 +1,14 @@
 package com.muzach.generation;
 
 import com.muzach.music.NoteLocation;
-import com.muzach.music.Composition;
+import com.muzach.preset.Preset;
 
-public class Generator {
+public class MusicGenerator implements IMusicGenerator {
 
     private Composition composition;
     private Preset preset;
 
-    public Generator(Composition composition, Preset preset) {
+    public MusicGenerator(Composition composition, Preset preset) {
         this.composition = composition;
         this.preset = preset;
     }

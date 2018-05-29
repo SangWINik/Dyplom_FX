@@ -5,8 +5,8 @@ import com.muzach.music.NoteLocation;
 import com.muzach.music.Note;
 import com.muzach.music.NotePitch;
 import com.muzach.music.Scale;
-import com.muzach.music.Track;
-import com.muzach.populators.MelodySegments;
+import com.muzach.preset.Preset;
+import com.muzach.utils.populators.MelodySegments;
 
 import java.util.*;
 import java.util.stream.Collectors;

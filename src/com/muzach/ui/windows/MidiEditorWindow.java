@@ -1,7 +1,7 @@
 package com.muzach.ui.windows;
 
 import com.muzach.music.TimeSignature;
-import com.muzach.music.Track;
+import com.muzach.generation.Track;
 import com.muzach.ui.controllers.MidiEditor;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

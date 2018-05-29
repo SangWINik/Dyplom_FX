@@ -1,12 +1,12 @@
 package com.muzach.ui.controls;
 
-import com.muzach.midi.Player;
+import com.muzach.playback.Player;
 import com.muzach.music.NoteDuration;
 import com.muzach.music.NoteLocation;
 import com.muzach.music.Note;
 import com.muzach.music.NotePitch;
 import com.muzach.music.TimeSignature;
-import com.muzach.music.Track;
+import com.muzach.generation.Track;
 import javafx.beans.NamedArg;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;

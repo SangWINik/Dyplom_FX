@@ -1,4 +1,6 @@
-package com.muzach.midi;
+package com.muzach.playback;
+
+import com.muzach.playback.Player;
 
 import javax.sound.midi.MetaEventListener;
 import javax.sound.midi.MetaMessage;

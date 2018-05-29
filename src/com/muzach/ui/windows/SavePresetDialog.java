@@ -1,9 +1,8 @@
 package com.muzach.ui.windows;
 
-import com.muzach.generation.Preset;
-import com.muzach.utils.SerializationHelper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import com.muzach.preset.Preset;
+import com.muzach.preset.IPresetManager;
+import com.muzach.preset.PresetManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,8 +16,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.util.List;
 
 public class SavePresetDialog {
@@ -90,8 +87,8 @@ public class SavePresetDialog {
         if (!validError) {
             preset.setName(nameTextField.getText());
             preset.setDescription(descriptionTextArea.getText());
-            myPresets.add(preset);
-            SerializationHelper.serializeMyPresets(myPresets);
+            IPresetManager presetManager = new PresetManager(myPresets);
+            presetManager.saveMyPreset(preset);
             window.close();
         }
     }

@@ -1,6 +1,6 @@
 package com.muzach.generation;
 
-import com.muzach.music.Track;
+import com.muzach.preset.Preset;
 
 public interface IGeneratorHelper {
     void populateMelodyRythm(Track melodyTrack, Preset preset, int measureCount);

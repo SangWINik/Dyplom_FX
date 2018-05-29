@@ -2,7 +2,7 @@ package com.muzach.ui.controllers;
 
 import com.muzach.music.NoteDuration;
 import com.muzach.music.TimeSignature;
-import com.muzach.music.Track;
+import com.muzach.generation.Track;
 import com.muzach.ui.controls.KeyboardPane;
 import com.muzach.ui.controls.PianorollPane;
 import javafx.beans.value.ChangeListener;

@@ -1,6 +1,5 @@
-package com.muzach.populators;
+package com.muzach.utils.populators;
 
-import com.muzach.music.Note;
 import com.muzach.music.NotePitch;
 import com.muzach.music.Scale;
 

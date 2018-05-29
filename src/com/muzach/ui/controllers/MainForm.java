@@ -1,18 +1,21 @@
 package com.muzach.ui.controllers;
 
-import com.muzach.generation.Generator;
-import com.muzach.generation.Preset;
-import com.muzach.populators.DefaultPresets;
-import com.muzach.populators.Scales;
-import com.muzach.midi.Player;
+import com.muzach.generation.*;
+import com.muzach.midi.IMidiManager;
+import com.muzach.midi.MidiManager;
+import com.muzach.preset.Preset;
+import com.muzach.utils.populators.DefaultPresets;
+import com.muzach.utils.populators.Scales;
+import com.muzach.playback.Player;
 import com.muzach.midi.SequenceBuilder;
 import com.muzach.music.NoteDuration;
 import com.muzach.music.NoteLocation;
 import com.muzach.music.*;
+import com.muzach.preset.IPresetManager;
+import com.muzach.preset.PresetManager;
 import com.muzach.ui.controls.PresetPane;
 import com.muzach.ui.controls.TracksPlayerPane;
 import com.muzach.ui.windows.SavePresetDialog;
-import com.muzach.utils.SerializationHelper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -148,8 +151,9 @@ public class MainForm {
     }
 
     private void initMyPresets(){
+        IPresetManager presetManager = new PresetManager(myPresets);
         myPresetsVBox.getChildren().clear();
-        myPresets = SerializationHelper.deserializeMyPresets();
+        myPresets = presetManager.getMyPresets();
         if (myPresets == null || myPresets.isEmpty()) {
             Label noPresets = new Label("There are no saved presets right now. Go to Advanced Settings to create your own preset or Presets to choose one of predefined.");
             myPresetsVBox.getChildren().add(noPresets);
@@ -223,7 +227,7 @@ public class MainForm {
     public void generate() {
         composition = new Composition();
         composition.setMeasureCount((int) measureCountSpinner.getValue());
-        Generator generator = new Generator(composition, parseAdvancedSettings());
+        IMusicGenerator generator = new MusicGenerator(composition, parseAdvancedSettings());
         composition = generator.generate();
         tracksPlayerPane.setComposition(composition);
         tracksPlayerPane.reDraw();
@@ -239,26 +243,11 @@ public class MainForm {
     }
 
     public void pause() {
-        try {
-            if (sequencer.isOpen()) {
-                long currentPostion = sequencer.getTickPosition();
-                sequencer.stop();
-                sequencer.setTickPosition(currentPostion);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        Player.pauseComposition();
     }
 
     public void stop() {
-        try {
-            if (sequencer.isOpen()) {
-                sequencer.stop();
-                sequencer.close();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        Player.stopComposition();
     }
 
     public void savePreset() {
@@ -268,8 +257,8 @@ public class MainForm {
     }
 
     private void deletePreset(Preset preset){
-        myPresets.remove(preset);
-        SerializationHelper.serializeMyPresets(myPresets);
+        IPresetManager presetManager = new PresetManager(myPresets);
+        presetManager.removePreset(preset);
         initMyPresets();
     }
 
@@ -281,18 +270,12 @@ public class MainForm {
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
             try {
-                SequenceBuilder sequenceBuilder = new SequenceBuilder(composition.getTimeSignature(), composition.getMeasureCount(), true);
-                sequenceBuilder.setMelodyTrack(composition.getMelodyTrack());
-                sequenceBuilder.setHarmonyTrack(composition.getHarmonyTrack());
-                MidiSystem.write(sequenceBuilder.getSequence(), 1, file);
+                IMidiManager midiManager = new MidiManager();
+                midiManager.saveMidiFile(composition, file);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-    }
-
-    public Stage getStage() {
-        return stage;
     }
 
     public void setStage(Stage stage) {

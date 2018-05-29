@@ -1,6 +1,6 @@
 package com.muzach.ui.controls;
 
-import com.muzach.generation.Preset;
+import com.muzach.preset.Preset;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

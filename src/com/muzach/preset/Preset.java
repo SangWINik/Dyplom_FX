@@ -1,4 +1,4 @@
-package com.muzach.generation;
+package com.muzach.preset;
 
 import com.muzach.music.Scale;
 import com.muzach.music.TimeSignature;
