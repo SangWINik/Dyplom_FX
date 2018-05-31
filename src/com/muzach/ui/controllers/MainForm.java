@@ -69,40 +69,41 @@ public class MainForm {
     private List<PresetPane> presetPanes;
     private Sequencer sequencer;
 
-    public MainForm(){
-        TimeSignature timeSignature = new TimeSignature(6, 4);
+    public MainForm() {
+        TimeSignature timeSignature = new TimeSignature(4, 4);
         NoteLocation.setMeasureLength(timeSignature.numinator); //important
 
         Track melodyTrack = new Track();
-        for (int i = 0; i < 4; i++) {
-            melodyTrack.addNote(new Note(NotePitch.C2, NoteDuration.Duration.QUARTER, NoteLocation.getNoteLocation(i + 1, 1, NoteDuration.Duration.EIGHTH), 96));
-            melodyTrack.addNote(new Note(NotePitch.Ds1, NoteDuration.Duration.QUARTER, NoteLocation.getNoteLocation(i + 1, 4, NoteDuration.Duration.EIGHTH), 30));
-            melodyTrack.addNote(new Note(NotePitch.G1, NoteDuration.Duration.QUARTER, NoteLocation.getNoteLocation(i + 1, 5, NoteDuration.Duration.EIGHTH), 60));
-            melodyTrack.addNote(new Note(NotePitch.As1, NoteDuration.Duration.QUARTER, NoteLocation.getNoteLocation(i + 1, 7, NoteDuration.Duration.EIGHTH), 100));
-            melodyTrack.addNote(new Note(NotePitch.G1, NoteDuration.Duration.QUARTER, NoteLocation.getNoteLocation(i + 1, 9, NoteDuration.Duration.EIGHTH), 80));
-            melodyTrack.addNote(new Note(NotePitch.Ds1, NoteDuration.Duration.QUARTER, NoteLocation.getNoteLocation(i + 1, 20, NoteDuration.Duration.SIXTEENTH), 70));
-        }
+        melodyTrack.addNote(new Note(NotePitch.C1, NoteDuration.Duration.EIGHTH, NoteLocation.getNoteLocation(1, 1, NoteDuration.Duration.EIGHTH), 100));
+        melodyTrack.addNote(new Note(NotePitch.D1, NoteDuration.Duration.EIGHTH, NoteLocation.getNoteLocation(1, 2, NoteDuration.Duration.EIGHTH), 100));
+        melodyTrack.addNote(new Note(NotePitch.Ds1, NoteDuration.Duration.EIGHTH, NoteLocation.getNoteLocation(1, 3, NoteDuration.Duration.EIGHTH), 100));
+        melodyTrack.addNote(new Note(NotePitch.F1, NoteDuration.Duration.EIGHTH, NoteLocation.getNoteLocation(1, 4, NoteDuration.Duration.EIGHTH), 100));
+        melodyTrack.addNote(new Note(NotePitch.D1, NoteDuration.Duration.QUARTER, NoteLocation.getNoteLocation(1, 5, NoteDuration.Duration.EIGHTH), 100));
+        melodyTrack.addNote(new Note(NotePitch.As0, NoteDuration.Duration.EIGHTH, NoteLocation.getNoteLocation(1, 7, NoteDuration.Duration.EIGHTH), 100));
+        melodyTrack.addNote(new Note(NotePitch.C1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(1, 8, NoteDuration.Duration.EIGHTH), 100));
 
         Track harmonyTrack = new Track();
-        for (int i = 0; i < 3; i++) {
-            harmonyTrack.addNote(new Note(NotePitch.C1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 1, NoteDuration.Duration.HALF), 50));
-            harmonyTrack.addNote(new Note(NotePitch.Ds1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 1, NoteDuration.Duration.HALF), 50));
-            harmonyTrack.addNote(new Note(NotePitch.G1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 1, NoteDuration.Duration.HALF), 50));
-            harmonyTrack.addNote(new Note(NotePitch.As1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 1, NoteDuration.Duration.HALF), 50));
+        harmonyTrack.addNote(new Note(NotePitch.C1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(1, 1, NoteDuration.Duration.HALF), 50));
+        harmonyTrack.addNote(new Note(NotePitch.Ds1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(1, 1, NoteDuration.Duration.HALF), 50));
+        harmonyTrack.addNote(new Note(NotePitch.G1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(1, 1, NoteDuration.Duration.HALF), 50));
 
-            harmonyTrack.addNote(new Note(NotePitch.C1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 2, NoteDuration.Duration.HALF), 50));
-            harmonyTrack.addNote(new Note(NotePitch.Ds1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 2, NoteDuration.Duration.HALF), 50));
-            harmonyTrack.addNote(new Note(NotePitch.G1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 2, NoteDuration.Duration.HALF), 50));
-            harmonyTrack.addNote(new Note(NotePitch.As1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 2, NoteDuration.Duration.HALF), 50));
+        harmonyTrack.addNote(new Note(NotePitch.As0, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(1, 2, NoteDuration.Duration.HALF), 50));
+        harmonyTrack.addNote(new Note(NotePitch.D1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(1, 2, NoteDuration.Duration.HALF), 50));
+        harmonyTrack.addNote(new Note(NotePitch.E1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(1, 2, NoteDuration.Duration.HALF), 50));
 
-            harmonyTrack.addNote(new Note(NotePitch.C1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 3, NoteDuration.Duration.HALF), 50));
-            harmonyTrack.addNote(new Note(NotePitch.Ds1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 3, NoteDuration.Duration.HALF), 50));
-            harmonyTrack.addNote(new Note(NotePitch.G1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 3, NoteDuration.Duration.HALF), 50));
-            harmonyTrack.addNote(new Note(NotePitch.As1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(i + 1, 3, NoteDuration.Duration.HALF), 50));
-        }
+        harmonyTrack.addNote(new Note(NotePitch.C1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(2, 1, NoteDuration.Duration.HALF), 50));
+        harmonyTrack.addNote(new Note(NotePitch.Ds1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(2, 1, NoteDuration.Duration.HALF), 50));
+        harmonyTrack.addNote(new Note(NotePitch.G1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(2, 1, NoteDuration.Duration.HALF), 50));
+        harmonyTrack.addNote(new Note(NotePitch.As1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(2, 1, NoteDuration.Duration.HALF), 50));
+
+        harmonyTrack.addNote(new Note(NotePitch.C1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(2, 2, NoteDuration.Duration.HALF), 50));
+        harmonyTrack.addNote(new Note(NotePitch.Ds1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(2, 2, NoteDuration.Duration.HALF), 50));
+        harmonyTrack.addNote(new Note(NotePitch.G1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(2, 2, NoteDuration.Duration.HALF), 50));
+        harmonyTrack.addNote(new Note(NotePitch.As1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(2, 2, NoteDuration.Duration.HALF), 50));
+
         composition = new Composition();
-        composition.setMeasureCount(4);
-        composition.setTempoBMP(200);
+        composition.setMeasureCount(2);
+        composition.setTempoBMP(80);
         composition.setTimeSignature(timeSignature);
         composition.setMelodyTrack(melodyTrack);
         composition.setHarmonyTrack(harmonyTrack);
@@ -110,7 +111,7 @@ public class MainForm {
         sequencer = Player.getSequencer();
     }
 
-    public void initialize(){
+    public void initialize() {
         presetPanes = new ArrayList<>();
 
         initAdvancedSettings();
@@ -121,11 +122,11 @@ public class MainForm {
 
         tracksPlayerPane = new TracksPlayerPane(composition, sequencer);
         Runnable thread = () -> {
-            while(true) {
+            while (true) {
                 try {
-                    if (sequencer.isOpen()){
+                    if (sequencer.isOpen()) {
                         Platform.runLater(() -> {
-                            tracksPlayerPane.setMarkerPosition((int)sequencer.getTickPosition());
+                            tracksPlayerPane.setMarkerPosition((int) sequencer.getTickPosition());
                         });
                     }
                     Thread.sleep(40);
@@ -139,10 +140,10 @@ public class MainForm {
         playerHBox.getChildren().addAll(tracksPlayerPane);
     }
 
-    private void initDefaultPresets(){
+    private void initDefaultPresets() {
         defaultPresetsVBox.getChildren().clear();
         defaultPresets = DefaultPresets.get();
-        for (Preset preset: defaultPresets) {
+        for (Preset preset : defaultPresets) {
             PresetPane presetPane = new PresetPane(preset, true);
             presetPanes.add(presetPane);
             defaultPresetsVBox.getChildren().add(presetPane);
@@ -150,7 +151,7 @@ public class MainForm {
         initPresetEvents();
     }
 
-    private void initMyPresets(){
+    private void initMyPresets() {
         IPresetManager presetManager = new PresetManager(myPresets);
         myPresetsVBox.getChildren().clear();
         myPresets = presetManager.getMyPresets();
@@ -158,7 +159,7 @@ public class MainForm {
             Label noPresets = new Label("There are no saved presets right now. Go to Advanced Settings to create your own preset or Presets to choose one of predefined.");
             myPresetsVBox.getChildren().add(noPresets);
         }
-        for (Preset preset: myPresets){
+        for (Preset preset : myPresets) {
             PresetPane presetPane = new PresetPane(preset, false);
             presetPanes.add(presetPane);
             myPresetsVBox.getChildren().add(presetPane);
@@ -167,11 +168,11 @@ public class MainForm {
     }
 
     private void initPresetEvents() {
-        for (PresetPane presetPane: presetPanes) {
+        for (PresetPane presetPane : presetPanes) {
             presetPane.setOnMousePressed(event -> {
                 presetPane.select();
                 setAdvancedSettingsWithPreset(presetPane.getPreset());
-                for (PresetPane pp: presetPanes) {
+                for (PresetPane pp : presetPanes) {
                     if (pp != presetPane) {
                         pp.deselect();
                     }
@@ -200,7 +201,7 @@ public class MainForm {
         setAdvancedSettingsWithPreset(defaultPreset);
     }
 
-    private Preset parseAdvancedSettings(){
+    private Preset parseAdvancedSettings() {
         Preset preset = new Preset();
         preset.setTimeSignature((TimeSignature) timeSignatureComboBox.getValue());
         preset.setNoteValues(noteValuesSlider.getValue());
@@ -212,9 +213,9 @@ public class MainForm {
         return preset;
     }
 
-    private void setAdvancedSettingsWithPreset(Preset preset){
-        TimeSignature newTimeSignature = (TimeSignature) timeSignatureComboBox.getItems().stream().filter(t -> ((TimeSignature)(t)).toString().equals(preset.getTimeSignature().toString())).findFirst().get();
-        Scale newScale = (Scale) scaleComboBox.getItems().stream().filter(s -> ((Scale)(s)).toString().equals(preset.getScale().toString())).findFirst().get();
+    private void setAdvancedSettingsWithPreset(Preset preset) {
+        TimeSignature newTimeSignature = (TimeSignature) timeSignatureComboBox.getItems().stream().filter(t -> ((TimeSignature) (t)).toString().equals(preset.getTimeSignature().toString())).findFirst().get();
+        Scale newScale = (Scale) scaleComboBox.getItems().stream().filter(s -> ((Scale) (s)).toString().equals(preset.getScale().toString())).findFirst().get();
         timeSignatureComboBox.setValue(newTimeSignature);
         noteValuesSlider.setValue(preset.getNoteValues());
         pauseFrequencySlider.setValue(preset.getPauseFrequency());
@@ -235,7 +236,7 @@ public class MainForm {
 
     public void play() {
         try {
-            composition.setTempoBMP((int)tempoSpinner.getValue());
+            composition.setTempoBMP((int) tempoSpinner.getValue());
             Player.playComposition(composition, repeatCheckBox.isSelected());
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -256,13 +257,13 @@ public class MainForm {
         initMyPresets();
     }
 
-    private void deletePreset(Preset preset){
+    private void deletePreset(Preset preset) {
         IPresetManager presetManager = new PresetManager(myPresets);
         presetManager.removePreset(preset);
         initMyPresets();
     }
 
-    public void saveMidi(){
+    public void saveMidi() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save MIDI file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("MIDI file(*.mid)", "*.mid"));

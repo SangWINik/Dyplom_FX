@@ -17,8 +17,8 @@ public class MusicGenerator implements IMusicGenerator {
         IGeneratorHelper generatorHelper = new GeneratorHelper();
         composition.setTimeSignature(preset.getTimeSignature());
         NoteLocation.setMeasureLength(preset.getTimeSignature().numinator);
-        generatorHelper.populateHarmonyRythm(composition.getHarmonyTrack(), preset, composition.getMeasureCount());
-        generatorHelper.populateMelodyRythm(composition.getMelodyTrack(), preset, composition.getMeasureCount());
+        generatorHelper.populateHarmonyRhythm(composition.getHarmonyTrack(), preset, composition.getMeasureCount());
+        generatorHelper.populateMelodyRhythm(composition.getMelodyTrack(), preset, composition.getMeasureCount());
         generatorHelper.populateHarmonyChords(composition.getHarmonyTrack(), preset);
         generatorHelper.populateMelodyPitch(composition.getMelodyTrack(), preset);
         return composition;

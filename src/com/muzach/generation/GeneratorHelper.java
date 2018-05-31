@@ -19,7 +19,7 @@ public class GeneratorHelper implements IGeneratorHelper {
     }
 
     @Override
-    public void populateMelodyRythm(Track melodyTrack, Preset preset, int measureCount) {
+    public void populateMelodyRhythm(Track melodyTrack, Preset preset, int measureCount) {
         int quarterBeatsPerMeasure = preset.getTimeSignature().numinator;
         boolean halfAllowed;
         for (int i = 0; i < measureCount; i++) {
@@ -116,7 +116,7 @@ public class GeneratorHelper implements IGeneratorHelper {
     }
 
     @Override
-    public void populateHarmonyRythm(Track harmonyTrack, Preset preset, int measureCount) {
+    public void populateHarmonyRhythm(Track harmonyTrack, Preset preset, int measureCount) {
         int quarterBeatsPerMeasure = preset.getTimeSignature().numinator;
         boolean halfAllowed;
         for (int i = 0; i < measureCount; i++) {

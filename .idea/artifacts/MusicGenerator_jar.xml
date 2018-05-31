@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MusicGenerator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MusicGenerator_jar</output-path>
+    <root id="archive" name="MusicGenerator.jar">
+      <element id="module-output" name="Dyplom_FX" />
+    </root>
+  </artifact>
+</component>
