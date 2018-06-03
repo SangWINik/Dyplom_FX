@@ -74,17 +74,14 @@ public class Player {
         }
     }
 
-    public static void playOneNote(NotePitch pitch) {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    midiSynth.getChannels()[0].noteOn(pitch.getMidiNote(), 100);
-                    Thread.sleep(500);
-                    midiSynth.getChannels()[0].noteOff(pitch.getMidiNote());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+    public static void playOneNote(NotePitch pitch, int toneOffset) {
+        Thread thread = new Thread(() -> {
+            try {
+                midiSynth.getChannels()[0].noteOn(pitch.getMidiNote(toneOffset), 100);
+                Thread.sleep(500);
+                midiSynth.getChannels()[0].noteOff(pitch.getMidiNote(toneOffset));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
         thread.start();

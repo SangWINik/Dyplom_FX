@@ -37,7 +37,7 @@ public class TracksPlayerPane extends Pane {
 
         double trackWidth = getPrefWidth() - buttonWidth - horizontalSpacing;
 
-        TrackPane melodyTrackPane = new TrackPane(composition.getMelodyTrack(), composition.getTimeSignature(), composition.getMeasureCount(), "Melody", trackWidth, trackHeight);
+        TrackPane melodyTrackPane = new TrackPane(composition.getMelodyTrack(), composition.getTimeSignature(), composition.getMeasureCount(), composition.getToneOffset(),"Melody", trackWidth, trackHeight);
         Button editMelodyButton = new Button("Edit");
         editMelodyButton.setPrefWidth(buttonWidth);
         Button muteMelodyButton = new Button("Mute");
@@ -49,12 +49,12 @@ public class TracksPlayerPane extends Pane {
             onMuteClick(melodyTrackPane, muteMelodyButton, true);
         });
         editMelodyButton.setOnAction(event -> {
-            MidiEditorWindow midiEditor = new MidiEditorWindow(composition.getMelodyTrack(), composition.getTimeSignature(), composition.getMeasureCount());
+            MidiEditorWindow midiEditor = new MidiEditorWindow(composition.getMelodyTrack(), composition.getTimeSignature(), composition.getMeasureCount(), composition.getToneOffset());
             midiEditor.showModal();
             reDraw();
         });
 
-        TrackPane harmonyTrackPane = new TrackPane(composition.getHarmonyTrack(), composition.getTimeSignature(), composition.getMeasureCount(), "Harmony", trackWidth, trackHeight);
+        TrackPane harmonyTrackPane = new TrackPane(composition.getHarmonyTrack(), composition.getTimeSignature(), composition.getMeasureCount(), composition.getToneOffset(), "Harmony", trackWidth, trackHeight);
         Button editHarmonyButton = new Button("Edit");
         editHarmonyButton.setPrefWidth(buttonWidth);
         Button muteHarmonyButton = new Button("Mute");
@@ -66,7 +66,7 @@ public class TracksPlayerPane extends Pane {
             onMuteClick(harmonyTrackPane, muteHarmonyButton, false);
         });
         editHarmonyButton.setOnAction(event -> {
-            MidiEditorWindow midiEditor = new MidiEditorWindow(composition.getHarmonyTrack(), composition.getTimeSignature(), composition.getMeasureCount());
+            MidiEditorWindow midiEditor = new MidiEditorWindow(composition.getHarmonyTrack(), composition.getTimeSignature(), composition.getMeasureCount(), composition.getToneOffset());
             midiEditor.showModal();
             reDraw();
         });

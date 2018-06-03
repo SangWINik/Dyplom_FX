@@ -14,14 +14,16 @@ public class SequenceBuilder {
     private int measureCount;
     private Track melodyTrack;
     private Track harmonyTrack;
+    private int toneOffset;
 
     private boolean isForMidiSave = false;
 
-    public SequenceBuilder(TimeSignature timeSignature, int measureCount, boolean isForMidiSave) throws InvalidMidiDataException {
+    public SequenceBuilder(TimeSignature timeSignature, int measureCount, int toneOffset, boolean isForMidiSave) throws InvalidMidiDataException {
         this.measureCount = measureCount;
         sequence = new Sequence(Sequence.PPQ, TICKS_PER_QUARTER_NOTE);
         melodyTrack = sequence.createTrack();
         harmonyTrack = sequence.createTrack();
+        this.toneOffset = toneOffset;
         this.isForMidiSave = isForMidiSave;
         setTimeSignature(timeSignature);
     }
@@ -68,7 +70,7 @@ public class SequenceBuilder {
         try {
             //note on
             sm = new ShortMessage();
-            sm.setMessage(0x90, note.getPitch().getMidiNote(), note.getVelocity());
+            sm.setMessage(0x90, note.getPitch().getMidiNote(toneOffset), note.getVelocity());
             long tick = note.getLocation().getTick();
             if (isForMidiSave) {
                 tick -= 1;
@@ -78,7 +80,7 @@ public class SequenceBuilder {
 
             //note off
             sm = new ShortMessage();
-            sm.setMessage(0x80, note.getPitch().getMidiNote(), note.getVelocity());
+            sm.setMessage(0x80, note.getPitch().getMidiNote(toneOffset), note.getVelocity());
             tick = note.getLocation().getTick() + NoteDuration.getTickCount(note.getDuration());
             if (isForMidiSave) {
                 tick -= 1;

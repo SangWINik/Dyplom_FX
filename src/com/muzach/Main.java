@@ -17,12 +17,11 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         window = primaryStage;
-        //Parent root = FXMLLoader.load(getClass().getResource("ui/fxforms/mainForm.fxml"));
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ui/fxforms/mainForm.fxml"));
         Parent root = (Parent)loader.load();
         MainForm controller = (MainForm)loader.getController();
         controller.setStage(primaryStage);
-        primaryStage.setTitle("Muzach");
+        primaryStage.setTitle("Music Generator");
         primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
         primaryStage.show();

@@ -68,6 +68,7 @@ public class MainForm {
     private List<Preset> myPresets;
     private List<PresetPane> presetPanes;
     private Sequencer sequencer;
+    private Preset selectedPreset;
 
     public MainForm() {
         TimeSignature timeSignature = new TimeSignature(4, 4);
@@ -89,7 +90,7 @@ public class MainForm {
 
         harmonyTrack.addNote(new Note(NotePitch.As0, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(1, 2, NoteDuration.Duration.HALF), 50));
         harmonyTrack.addNote(new Note(NotePitch.D1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(1, 2, NoteDuration.Duration.HALF), 50));
-        harmonyTrack.addNote(new Note(NotePitch.E1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(1, 2, NoteDuration.Duration.HALF), 50));
+        harmonyTrack.addNote(new Note(NotePitch.F0, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(1, 2, NoteDuration.Duration.HALF), 50));
 
         harmonyTrack.addNote(new Note(NotePitch.C1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(2, 1, NoteDuration.Duration.HALF), 50));
         harmonyTrack.addNote(new Note(NotePitch.Ds1, NoteDuration.Duration.HALF, NoteLocation.getNoteLocation(2, 1, NoteDuration.Duration.HALF), 50));
@@ -103,12 +104,13 @@ public class MainForm {
 
         composition = new Composition();
         composition.setMeasureCount(2);
-        composition.setTempoBMP(80);
+        composition.setTempoBMP(100);
         composition.setTimeSignature(timeSignature);
         composition.setMelodyTrack(melodyTrack);
         composition.setHarmonyTrack(harmonyTrack);
 
         sequencer = Player.getSequencer();
+        stop();
     }
 
     public void initialize() {
@@ -117,6 +119,8 @@ public class MainForm {
         initAdvancedSettings();
         initMyPresets();
         initDefaultPresets();
+
+        selectPreset(presetPanes.get(0));
 
         repeatCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> Player.getPlayerMetaEventListener().setLoop(newValue));
 
@@ -170,13 +174,7 @@ public class MainForm {
     private void initPresetEvents() {
         for (PresetPane presetPane : presetPanes) {
             presetPane.setOnMousePressed(event -> {
-                presetPane.select();
-                setAdvancedSettingsWithPreset(presetPane.getPreset());
-                for (PresetPane pp : presetPanes) {
-                    if (pp != presetPane) {
-                        pp.deselect();
-                    }
-                }
+                selectPreset(presetPane);
             });
             presetPane.setOnDeleteAction(event -> deletePreset(presetPane.getPreset()));
         }
@@ -199,6 +197,20 @@ public class MainForm {
         defaultPreset.setChordChangeFrequency(50);
         defaultPreset.setChordColor(50);
         setAdvancedSettingsWithPreset(defaultPreset);
+
+        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(40, 200, composition.getTempoBMP());
+        tempoSpinner.setValueFactory(valueFactory);
+    }
+
+    private void selectPreset(PresetPane presetPane) {
+        presetPane.select();
+        selectedPreset = presetPane.getPreset();
+        setAdvancedSettingsWithPreset(presetPane.getPreset());
+        for (PresetPane pp : presetPanes) {
+            if (pp != presetPane) {
+                pp.deselect();
+            }
+        }
     }
 
     private Preset parseAdvancedSettings() {
@@ -210,6 +222,12 @@ public class MainForm {
         preset.setPitchJumps(pitchJumpsSlider.getValue());
         preset.setChordChangeFrequency(chordChangeFrequencySlider.getValue());
         preset.setChordColor(chordColorSlider.getValue());
+
+        if (selectedPreset.isDefault()) {
+            preset.setMinTempo(selectedPreset.getMinTempo());
+            preset.setMaxTempo(selectedPreset.getMaxTempo());
+        }
+
         return preset;
     }
 
@@ -226,12 +244,14 @@ public class MainForm {
     }
 
     public void generate() {
+        this.stop();
         composition = new Composition();
         composition.setMeasureCount((int) measureCountSpinner.getValue());
         IMusicGenerator generator = new MusicGenerator(composition, parseAdvancedSettings());
         composition = generator.generate();
         tracksPlayerPane.setComposition(composition);
         tracksPlayerPane.reDraw();
+        tempoSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(40, 200, composition.getTempoBMP()));
     }
 
     public void play() {

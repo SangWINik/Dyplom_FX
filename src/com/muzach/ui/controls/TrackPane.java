@@ -22,14 +22,16 @@ public class TrackPane extends Pane {
     private static final int verticalPadding = 15;
 
     private int measureCount;
+    private int toneOffset;
     private Track track;
     private TimeSignature timeSignature;
 
     private boolean muted = false;
     private String title;
 
-    public TrackPane(Track track, TimeSignature timeSignature, int measureCount, String title, double prefWidth, double prefHeight) {
+    public TrackPane(Track track, TimeSignature timeSignature, int measureCount, int toneOffset, String title, double prefWidth, double prefHeight) {
         this.measureCount = measureCount;
+        this.toneOffset = toneOffset;
         this.track = track;
         this.timeSignature = timeSignature;
         this.title = title;
@@ -104,7 +106,7 @@ public class TrackPane extends Pane {
         this.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 if (event.getClickCount() == 2) {
-                    MidiEditorWindow midiEditor = new MidiEditorWindow(track, timeSignature, measureCount);
+                    MidiEditorWindow midiEditor = new MidiEditorWindow(track, timeSignature, measureCount, toneOffset);
                     midiEditor.showModal();
                     reDraw();
                 }

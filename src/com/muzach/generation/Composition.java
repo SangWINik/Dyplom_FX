@@ -9,6 +9,8 @@ public class Composition {
     private Track melodyTrack;
     private Track harmonyTrack;
 
+    private Integer toneOffset = 48;
+
     public Composition(){
         timeSignature = new TimeSignature(4, 4);
         tempoBMP = 120;
@@ -56,4 +58,11 @@ public class Composition {
         this.tempoBMP = tempoBMP;
     }
 
+    public Integer getToneOffset() {
+        return toneOffset;
+    }
+
+    public void setToneOffset(Integer toneOffset) {
+        this.toneOffset = toneOffset;
+    }
 }

@@ -6,6 +6,7 @@ import com.muzach.music.Note;
 import com.muzach.music.NotePitch;
 import com.muzach.music.Scale;
 import com.muzach.preset.Preset;
+import com.muzach.utils.populators.GenerationOdds;
 import com.muzach.utils.populators.MelodySegments;
 
 import java.util.*;
@@ -16,6 +17,16 @@ public class GeneratorHelper implements IGeneratorHelper {
 
     public GeneratorHelper() {
         random = new Random();
+    }
+
+    @Override
+    public void populateMeta(Composition composition, Preset preset) {
+        if (preset.isDefault()) {
+            composition.setTempoBMP(random.nextInt(preset.getMaxTempo() - preset.getMinTempo()) + preset.getMinTempo());
+        } else {
+            composition.setTempoBMP(80);
+        }
+        composition.setToneOffset(random.nextInt(53 - 42) + 42);
     }
 
     @Override
@@ -42,35 +53,8 @@ public class GeneratorHelper implements IGeneratorHelper {
     public void populateMelodyPitch(Track melodyTrack, Preset preset) {
         double pitchJumps = preset.getPitchJumps();
 
-        int level1Chances = 1;
-        int level2Chances = 1;
-        int level3Chances = 1;
-        int level4Chances = 1;
-        int level1Margin = 2;
-        int level2Margin = 6;
-        int level3Margin = 9;
-
-        if (pitchJumps < 25){
-            level1Chances = 100;
-            level2Chances = 30;
-            level3Chances = 5;
-            level4Chances = 1;
-        } else if (pitchJumps < 50) {
-            level1Chances = 90;
-            level2Chances = 30;
-            level3Chances = 10;
-            level4Chances = 2;
-        } else if (pitchJumps < 75) {
-            level1Chances = 80;
-            level2Chances = 30;
-            level3Chances = 15;
-            level4Chances = 5;
-        } else {
-            level1Chances = 10;
-            level2Chances = 10;
-            level3Chances = 30;
-            level4Chances = 15;
-        }
+        List<Integer> odds = GenerationOdds.getMelodyPitchOdds(pitchJumps);
+        List<Integer> margins = GenerationOdds.getMelodyPitchMargins();
 
         List<NotePitch> options = preset.getScale().getNotePitches();
         List<NotePitch> optionsCorrected = new ArrayList<>();
@@ -81,33 +65,17 @@ public class GeneratorHelper implements IGeneratorHelper {
         note0.setPitch(NotePitch.C1);
         for (int i = 1; i < melodyTrack.getNotes().size(); i++){
             int previousNotePitch = note0.getPitch().ordinal();
-            List<NotePitch> fitsInLevel1 = options.stream().filter(n -> Math.abs(n.ordinal() - previousNotePitch) <= level1Margin).collect(Collectors.toList());
-            List<NotePitch> fitsInLevel2 = options.stream().filter(n -> Math.abs(n.ordinal() - previousNotePitch) > level1Margin && Math.abs(n.ordinal() - previousNotePitch) <= level2Margin).collect(Collectors.toList());
-            List<NotePitch> fitsInLevel3 = options.stream().filter(n -> Math.abs(n.ordinal() - previousNotePitch) > level2Margin && Math.abs(n.ordinal() - previousNotePitch) <= level3Margin).collect(Collectors.toList());
-            List<NotePitch> fitsInLevel4 = options.stream().filter(n -> Math.abs(n.ordinal() - previousNotePitch) >= level3Margin).collect(Collectors.toList());
+            List<NotePitch> fitsInLevel1 = options.stream().filter(n -> Math.abs(n.ordinal() - previousNotePitch) <= margins.get(0)).collect(Collectors.toList());
+            List<NotePitch> fitsInLevel2 = options.stream().filter(n -> Math.abs(n.ordinal() - previousNotePitch) > margins.get(0) && Math.abs(n.ordinal() - previousNotePitch) <= margins.get(1)).collect(Collectors.toList());
+            List<NotePitch> fitsInLevel3 = options.stream().filter(n -> Math.abs(n.ordinal() - previousNotePitch) > margins.get(1) && Math.abs(n.ordinal() - previousNotePitch) <= margins.get(2)).collect(Collectors.toList());
+            List<NotePitch> fitsInLevel4 = options.stream().filter(n -> Math.abs(n.ordinal() - previousNotePitch) >= margins.get(2)).collect(Collectors.toList());
 
             optionsCorrected.clear();
 
-            if (!fitsInLevel1.isEmpty()) {
-                for (int j = 0; j < level1Chances; j++) {
-                    optionsCorrected.add(fitsInLevel1.get(random.nextInt(fitsInLevel1.size())));
-                }
-            }
-            if (!fitsInLevel2.isEmpty()) {
-                for (int j = 0; j < level2Chances; j++) {
-                    optionsCorrected.add(fitsInLevel2.get(random.nextInt(fitsInLevel2.size())));
-                }
-            }
-            if (!fitsInLevel3.isEmpty()) {
-                for (int j = 0; j < level3Chances; j++) {
-                    optionsCorrected.add(fitsInLevel3.get(random.nextInt(fitsInLevel3.size())));
-                }
-            }
-            if (!fitsInLevel4.isEmpty()) {
-                for (int j = 0; j < level4Chances; j++) {
-                    optionsCorrected.add(fitsInLevel4.get(random.nextInt(fitsInLevel4.size())));
-                }
-            }
+            addWithOdds(optionsCorrected, fitsInLevel1, odds.get(0));
+            addWithOdds(optionsCorrected, fitsInLevel2, odds.get(1));
+            addWithOdds(optionsCorrected, fitsInLevel3, odds.get(2));
+            addWithOdds(optionsCorrected, fitsInLevel4, odds.get(3));
 
             melodyTrack.getNotes().get(i).setPitch(optionsCorrected.get(random.nextInt(optionsCorrected.size())));
 
@@ -139,7 +107,6 @@ public class GeneratorHelper implements IGeneratorHelper {
         int chordsVelocity = 80;
         int keyNotesChance = 2;
 
-        double colorRate = preset.getChordColor();
         List<NotePitch> keyNotesOptimazedScale = new ArrayList<>();
         keyNotesOptimazedScale.addAll(preset.getScale().getNotePitches());
         for (int i = 0; i < keyNotesChance; i++) {
@@ -183,69 +150,32 @@ public class GeneratorHelper implements IGeneratorHelper {
     }
 
     private MelodySegment getRandomMelodySegment(Preset preset, boolean isOnFirstBeat, boolean halfAllowed) {
-        int level1Chances = 100;
-        int level2Chances = 50;
-        int level3Chances = 20;
-        int level4Chances = 5;
-        int level1Margin = 20;
-        int level2Margin = 40;
-        int level3Margin = 60;
+        List<Integer> odds = GenerationOdds.getMelodySegmentOdds();
+        List<Integer> margins = GenerationOdds.getMelodySegmentMargins();
 
         List<MelodySegment> options = MelodySegments.get(isOnFirstBeat, halfAllowed);
         List<MelodySegment> normalizedOptions = new ArrayList<>();
 
-        List<MelodySegment> fitsInLevel = options.stream().filter(s -> Math.abs(s.getValueRate() - preset.getNoteValues()) <= level1Margin).collect(Collectors.toList());
-        List<MelodySegment> fitsInLeve2 = options.stream().filter(s -> Math.abs(s.getValueRate() - preset.getNoteValues()) > level1Margin && Math.abs(s.getValueRate() - preset.getNoteValues()) <= level2Margin).collect(Collectors.toList());
-        List<MelodySegment> fitsInLeve3 = options.stream().filter(s -> Math.abs(s.getValueRate() - preset.getNoteValues()) > level2Margin && Math.abs(s.getValueRate() - preset.getNoteValues()) <= level3Margin).collect(Collectors.toList());
-        List<MelodySegment> fitsInLeve4 = options.stream().filter(s -> Math.abs(s.getValueRate() - preset.getNoteValues()) > level3Margin).collect(Collectors.toList());
+        List<MelodySegment> fitsInLevel = options.stream().filter(s -> Math.abs(s.getValueRate() - preset.getNoteValues()) <= margins.get(0)).collect(Collectors.toList());
+        List<MelodySegment> fitsInLeve2 = options.stream().filter(s -> Math.abs(s.getValueRate() - preset.getNoteValues()) > margins.get(0) && Math.abs(s.getValueRate() - preset.getNoteValues()) <= margins.get(1)).collect(Collectors.toList());
+        List<MelodySegment> fitsInLeve3 = options.stream().filter(s -> Math.abs(s.getValueRate() - preset.getNoteValues()) > margins.get(1) && Math.abs(s.getValueRate() - preset.getNoteValues()) <= margins.get(2)).collect(Collectors.toList());
+        List<MelodySegment> fitsInLeve4 = options.stream().filter(s -> Math.abs(s.getValueRate() - preset.getNoteValues()) > margins.get(2)).collect(Collectors.toList());
 
-        if (!fitsInLevel.isEmpty()) {
-            for (int i = 0; i < level1Chances; i++) {
-                normalizedOptions.add(fitsInLevel.get(random.nextInt(fitsInLevel.size())));
-            }
-        }
-        if (!fitsInLeve2.isEmpty()) {
-            for (int i = 0; i < level2Chances; i++) {
-                normalizedOptions.add(fitsInLeve2.get(random.nextInt(fitsInLeve2.size())));
-            }
-        }
-        if (!fitsInLeve3.isEmpty()) {
-            for (int i = 0; i < level3Chances; i++) {
-                normalizedOptions.add(fitsInLeve3.get(random.nextInt(fitsInLeve3.size())));
-            }
-        }
-        if (!fitsInLeve4.isEmpty()) {
-            for (int i = 0; i < level4Chances; i++) {
-                normalizedOptions.add(fitsInLeve4.get(random.nextInt(fitsInLeve4.size())));
-            }
-        }
+        addWithOdds(normalizedOptions, fitsInLevel, odds.get(0));
+        addWithOdds(normalizedOptions, fitsInLeve2, odds.get(1));
+        addWithOdds(normalizedOptions, fitsInLeve3, odds.get(2));
+        addWithOdds(normalizedOptions, fitsInLeve4, odds.get(3));
 
-        fitsInLevel = normalizedOptions.stream().filter(s -> Math.abs(s.getPauseRate() - preset.getPauseFrequency()) <= level1Margin).collect(Collectors.toList());
-        fitsInLeve2 = normalizedOptions.stream().filter(s -> Math.abs(s.getPauseRate() - preset.getPauseFrequency()) > level1Margin && Math.abs(s.getPauseRate() - preset.getPauseFrequency()) <= level2Margin).collect(Collectors.toList());
-        fitsInLeve3 = normalizedOptions.stream().filter(s -> Math.abs(s.getPauseRate() - preset.getPauseFrequency()) > level2Margin && Math.abs(s.getPauseRate() - preset.getPauseFrequency()) <= level3Margin).collect(Collectors.toList());
-        fitsInLeve4 = normalizedOptions.stream().filter(s -> Math.abs(s.getPauseRate() - preset.getPauseFrequency()) > level3Margin).collect(Collectors.toList());
+        fitsInLevel = normalizedOptions.stream().filter(s -> Math.abs(s.getPauseRate() - preset.getPauseFrequency()) <= margins.get(0)).collect(Collectors.toList());
+        fitsInLeve2 = normalizedOptions.stream().filter(s -> Math.abs(s.getPauseRate() - preset.getPauseFrequency()) > margins.get(0) && Math.abs(s.getPauseRate() - preset.getPauseFrequency()) <= margins.get(1)).collect(Collectors.toList());
+        fitsInLeve3 = normalizedOptions.stream().filter(s -> Math.abs(s.getPauseRate() - preset.getPauseFrequency()) > margins.get(1) && Math.abs(s.getPauseRate() - preset.getPauseFrequency()) <= margins.get(2)).collect(Collectors.toList());
+        fitsInLeve4 = normalizedOptions.stream().filter(s -> Math.abs(s.getPauseRate() - preset.getPauseFrequency()) > margins.get(2)).collect(Collectors.toList());
         normalizedOptions.clear();
 
-        if (!fitsInLevel.isEmpty()) {
-            for (int i = 0; i < level1Chances; i++) {
-                normalizedOptions.add(fitsInLevel.get(random.nextInt(fitsInLevel.size())));
-            }
-        }
-        if (!fitsInLeve2.isEmpty()) {
-            for (int i = 0; i < level2Chances; i++) {
-                normalizedOptions.add(fitsInLeve2.get(random.nextInt(fitsInLeve2.size())));
-            }
-        }
-        if (!fitsInLeve3.isEmpty()) {
-            for (int i = 0; i < level3Chances; i++) {
-                normalizedOptions.add(fitsInLeve3.get(random.nextInt(fitsInLeve3.size())));
-            }
-        }
-        if (!fitsInLeve4.isEmpty()) {
-            for (int i = 0; i < level4Chances; i++) {
-                normalizedOptions.add(fitsInLeve4.get(random.nextInt(fitsInLeve4.size())));
-            }
-        }
+        addWithOdds(normalizedOptions, fitsInLevel, odds.get(0));
+        addWithOdds(normalizedOptions, fitsInLeve2, odds.get(1));
+        addWithOdds(normalizedOptions, fitsInLeve3, odds.get(2));
+        addWithOdds(normalizedOptions, fitsInLeve4, odds.get(3));
 
         return normalizedOptions.get(random.nextInt(normalizedOptions.size()));
     }
@@ -264,5 +194,13 @@ public class GeneratorHelper implements IGeneratorHelper {
             chord.add(colorOptions.get(random.nextInt(colorOptions.size())));
         }
         return chord;
+    }
+
+    private <T> void addWithOdds(List<T> destination, List<T> source, int odds) {
+        if (!source.isEmpty()) {
+            for (int i = 0; i < odds; i++) {
+                destination.add(source.get(random.nextInt(source.size())));
+            }
+        }
     }
 }

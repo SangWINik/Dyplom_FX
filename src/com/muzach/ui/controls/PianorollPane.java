@@ -29,6 +29,7 @@ public class PianorollPane extends Pane {
 
     private int measureCount;
     private Track track;
+    private int toneOffset;
     private TimeSignature timeSignature;
     private NoteDuration.Duration resolution = NoteDuration.Duration.EIGHTH;
 
@@ -48,8 +49,9 @@ public class PianorollPane extends Pane {
 
     private boolean addMode = false;
 
-    public PianorollPane(Track track, TimeSignature timeSignature, int measureCount, @NamedArg(value = "octaveCount", defaultValue = "3") int octaveCount, @NamedArg(value = "laneHeight", defaultValue = "4") int laneHeight, HBox toolsHBox, ComboBox valueComboBox, Slider velocitySlider) {
+    public PianorollPane(Track track, TimeSignature timeSignature, int measureCount, int toneOffset, @NamedArg(value = "octaveCount", defaultValue = "3") int octaveCount, @NamedArg(value = "laneHeight", defaultValue = "4") int laneHeight, HBox toolsHBox, ComboBox valueComboBox, Slider velocitySlider) {
         this.measureCount = measureCount;
+        this.toneOffset = toneOffset;
         this.octaveCount = octaveCount;
         this.laneHeight = laneHeight;
         this.noteCount = octaveCount * 12;
@@ -184,7 +186,7 @@ public class PianorollPane extends Pane {
                         selectNote(note);
                         selectedOffset = (int) (event.getX() - noteRectangleMap.get(note).getX());
                         select = true;
-                        Player.playOneNote(note.getPitch());
+                        Player.playOneNote(note.getPitch(), toneOffset);
                         break;
                     }
                 }
@@ -204,7 +206,7 @@ public class PianorollPane extends Pane {
                 Note note = new Note(NotePitch.values()[pitchOrdinal], resolution, NoteLocation.getNoteLocation(measureNum, beatInMeasure, resolution), 100);
                 track.addNote(note);
                 selectNote(note);
-                Player.playOneNote(note.getPitch());
+                Player.playOneNote(note.getPitch(), toneOffset);
                 exitAddMode();
             }
         }
@@ -259,7 +261,7 @@ public class PianorollPane extends Pane {
         if (pitchOrdinal >= 0 && pitchOrdinal < noteCount) {
             NotePitch newPitch = NotePitch.values()[pitchOrdinal];
             if (note.getPitch() != newPitch) {
-                Player.playOneNote(newPitch);
+                Player.playOneNote(newPitch, toneOffset);
                 locationChanged = true;
                 note.setPitch(newPitch);
             }
