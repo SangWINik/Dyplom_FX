@@ -4,7 +4,6 @@ import com.muzach.music.Scale;
 import com.muzach.music.TimeSignature;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Preset implements Serializable {
 
@@ -27,6 +26,7 @@ public class Preset implements Serializable {
 
     public Preset(){}
 
+    //use if random tempo is not neaded
     public Preset(String name, String description, TimeSignature timeSignature, double noteValues, double pauseFrequency, Scale scale, double pitchJumps, double chordChangeFrequency, double chordColor) {
         this.name = name;
         this.description = description;
@@ -39,6 +39,7 @@ public class Preset implements Serializable {
         this.chordColor = chordColor;
     }
 
+    //use to allow random tempo
     public Preset(String name, String description, TimeSignature defaultTimeSignature, double noteValues, double pauseFrequency, Scale scale, double pitchJumps, double chordChangeFrequency, double chordColor, Integer minTempo, Integer maxTempo) {
         this.name = name;
         this.description = description;

@@ -6,6 +6,7 @@ public class PresetManager implements IPresetManager {
 
     private List<Preset> myPresets;
 
+    //my presets - collection of user's presets
     public PresetManager(List<Preset> myPresets) {
         this.myPresets = myPresets;
     }

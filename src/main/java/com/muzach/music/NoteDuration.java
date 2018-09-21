@@ -18,7 +18,7 @@ public class NoteDuration {
 
     static {
         int quarterNoteDuration = SequenceBuilder.TICKS_PER_QUARTER_NOTE;
-        durationMap = new EnumMap<Duration, Integer>(Duration.class);
+        durationMap = new EnumMap<>(Duration.class);
         durationMap.put(WHOLE, quarterNoteDuration*4);
         durationMap.put(HALF, quarterNoteDuration*2);
         durationMap.put(QUARTER, quarterNoteDuration);
@@ -26,7 +26,7 @@ public class NoteDuration {
         durationMap.put(SIXTEENTH, quarterNoteDuration / 4);
         durationMap.put(THIRTYSECOND, quarterNoteDuration / 8);
 
-        tsCount = new EnumMap<Duration, Integer>(Duration.class);
+        tsCount = new EnumMap<>(Duration.class);
         tsCount.put(THIRTYSECOND, 1);
         tsCount.put(SIXTEENTH, 2);
         tsCount.put(EIGHTH, 4);
@@ -40,6 +40,6 @@ public class NoteDuration {
     }
     public static int getTsCount(Duration duration) {
         return tsCount.get(duration);
-    }
+    } //number of ts notes
 }
 

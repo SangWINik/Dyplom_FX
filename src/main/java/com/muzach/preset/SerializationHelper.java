@@ -7,6 +7,8 @@ import java.util.List;
 public class SerializationHelper {
     private static final String path = "./mypresets.mzk";
 
+    private SerializationHelper() {}
+
     public static void serializeMyPresets(List<Preset> myPresets) {
         try {
             FileOutputStream fileOut = new FileOutputStream(path);

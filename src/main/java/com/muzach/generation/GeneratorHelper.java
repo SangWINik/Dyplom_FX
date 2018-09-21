@@ -126,7 +126,7 @@ public class GeneratorHelper implements IGeneratorHelper {
             if (NoteLocation.isOnFirstBeat(template.get(i).getLocation())) {
                 changeChord = true;
             } else {
-                boolean chOptions[] = new boolean[100];
+                boolean[] chOptions = new boolean[100];
                 for (int j = 0; j < preset.getChordChangeFrequency(); j++){
                     chOptions[j] = true;
                 }
@@ -134,7 +134,7 @@ public class GeneratorHelper implements IGeneratorHelper {
             }
             if (changeChord){
                 boolean color;
-                boolean cOptions[] = new boolean[100];
+                boolean[] cOptions = new boolean[100];
                 for (int j = 0; j < preset.getChordColor(); j++){
                     cOptions[j] = true;
                 }

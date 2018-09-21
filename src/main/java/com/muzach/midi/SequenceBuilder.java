@@ -55,6 +55,7 @@ public class SequenceBuilder {
         setEndOfTrack(harmonyTrack);
     }
 
+    //don't use this yet
     public void setInstrument(int instrument) throws Exception{
         ShortMessage sm = new ShortMessage();
         sm.setMessage(0xC0, instrument, 0x00);
@@ -81,7 +82,7 @@ public class SequenceBuilder {
             //note off
             sm = new ShortMessage();
             sm.setMessage(0x80, note.getPitch().getMidiNote(toneOffset), note.getVelocity());
-            tick = note.getLocation().getTick() + NoteDuration.getTickCount(note.getDuration());
+            tick = (long)note.getLocation().getTick() + NoteDuration.getTickCount(note.getDuration());
             if (isForMidiSave) {
                 tick -= 1;
             }
@@ -94,7 +95,7 @@ public class SequenceBuilder {
 
     private void setEndOfTrack(Track track) throws Exception {
         MetaMessage mm = new MetaMessage();
-        byte bytes[] = {};
+        byte[] bytes = {};
         mm.setMessage(0x2F, bytes, 0x00);
         long tick = NoteLocation.getNoteLocation(measureCount + 1, 1, NoteDuration.Duration.THIRTYSECOND).getTick();
         if (isForMidiSave) {

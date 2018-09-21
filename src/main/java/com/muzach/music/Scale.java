@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Scale implements Serializable {
-    private String name;
+    private String name; //name should represent scale. Ex: Harmonic Minor
     private List<NotePitch> notePitches;
-    private List<NotePitch> keyNotes;
+    private List<NotePitch> keyNotes; // key notes are usually 1, 4, 5
 
     public Scale(String name, List<NotePitch> notePitches, List<NotePitch> keyNotes) {
         this.name = name;

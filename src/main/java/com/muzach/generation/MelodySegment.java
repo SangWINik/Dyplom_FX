@@ -35,7 +35,7 @@ public class MelodySegment {
         for (Note note : notes) {
             average += NoteDuration.getTsCount(note.getDuration());
         }
-        if (notes.size() != 0) {
+        if (!notes.isEmpty()) {
             average /= notes.size();
         }
         average = average * rate + 1;
@@ -48,7 +48,7 @@ public class MelodySegment {
         for (Note note: notes) {
             durationsSum += NoteDuration.getTsCount(note.getDuration());
         }
-        double pausesSum = NoteDuration.getTsCount(duration) - durationsSum;
+        double pausesSum = NoteDuration.getTsCount(duration) - (double)durationsSum;
         double pausesRate = pausesSum/NoteDuration.getTsCount(duration);
         return 99*pausesRate + 1;
     }

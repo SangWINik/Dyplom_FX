@@ -3,7 +3,6 @@ package com.muzach.playback;
 import com.muzach.generation.Composition;
 import com.muzach.midi.IMidiManager;
 import com.muzach.midi.MidiManager;
-import com.muzach.midi.SequenceBuilder;
 import com.muzach.music.NotePitch;
 
 import javax.sound.midi.*;
@@ -13,6 +12,8 @@ public class Player {
     private static PlayerMetaEventListener playerMetaEventListener;
     //used to preview notes in editor
     private static Synthesizer midiSynth;
+
+    private Player() {}
 
     static {
         try {
@@ -27,6 +28,7 @@ public class Player {
         }
     }
 
+    //used to play melodies
     public static void playComposition(Composition composition, boolean loop) {
         try {
             if (!sequencer.isOpen()) {
@@ -74,6 +76,7 @@ public class Player {
         }
     }
 
+    //used in editor
     public static void playOneNote(NotePitch pitch, int toneOffset) {
         Thread thread = new Thread(() -> {
             try {
