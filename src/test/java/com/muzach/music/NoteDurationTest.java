@@ -1,9 +1,9 @@
 package com.muzach.music;
 
 import com.muzach.midi.SequenceBuilder;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 public class NoteDurationTest {
     @Test

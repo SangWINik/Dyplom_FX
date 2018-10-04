@@ -3,13 +3,13 @@ package com.muzach.generation;
 import com.muzach.music.Note;
 import com.muzach.music.NoteDuration;
 import com.muzach.music.NoteLocation;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 public class MelodySegmentTest {
     @Test

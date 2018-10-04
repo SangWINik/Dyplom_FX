@@ -8,10 +8,6 @@ public class Note {
 
     public Note(){}
 
-    public Note(int pitch, int duration, int location) {
-        //deprecated
-    }
-
     public Note(NotePitch pitch, NoteDuration.Duration duration, NoteLocation location, int velocity) {
         this.pitch = pitch;
         this.velocity = velocity;

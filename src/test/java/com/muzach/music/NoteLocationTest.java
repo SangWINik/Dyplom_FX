@@ -1,12 +1,12 @@
 package com.muzach.music;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 public class NoteLocationTest {
-    @Before
+    @BeforeClass
     public void setup() {
         NoteLocation.setMeasureLength(4);
     }

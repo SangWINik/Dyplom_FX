@@ -1,0 +1,19 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<!-- TestNG Documentation: http://testng.org/doc/documentation-main.html -->
+<suite name="ParallelTestSuite" parallel="methods" thread-count="3" verbose="2">
+    <test name="ParallelTest">
+        <classes>
+            <class name="com.muzach.generation.MelodySegmentTest" />
+            <class name="com.muzach.music.NoteDurationTest" />
+            <class name="com.muzach.music.NoteLocationTest" />
+            <class name="com.muzach.music.NotePitchTest" />
+            <class name="com.muzach.music.NoteTest" />
+            <class name="com.muzach.music.ScaleTest" />
+            <class name="com.muzach.music.TimeSignatureTest" />
+            <class name="com.muzach.preset.PresetTest" />
+            <class name="com.muzach.preset.PresetManagerTest" />
+            <class name="com.muzach.preset.SerializationHelperTest" />
+        </classes>
+    </test>
+</suite>

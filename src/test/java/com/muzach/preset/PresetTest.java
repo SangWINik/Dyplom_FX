@@ -2,11 +2,11 @@ package com.muzach.preset;
 
 import com.muzach.music.Scale;
 import com.muzach.music.TimeSignature;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 public class PresetTest {
     @Test
